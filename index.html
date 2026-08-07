@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GhostMesh - Technical Elegance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Geist:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e2e2e3",
+                        "surface-container": "#eeeeef",
+                        "on-primary-fixed": "#00174b",
+                        "outline-variant": "#c3c6d7",
+                        "surface-bright": "#f9f9fa",
+                        "on-tertiary-container": "#eaf0ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-secondary-container": "#656464",
+                        "secondary": "#5f5e5e",
+                        "primary-container": "#2563eb",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "surface-tint": "#0053db",
+                        "surface-container-high": "#e8e8e9",
+                        "background": "#f9f9fa",
+                        "surface-dim": "#dadadb",
+                        "inverse-surface": "#2f3132",
+                        "on-primary-container": "#eeefff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-background": "#1a1c1d",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-fixed": "#dce2f3",
+                        "inverse-on-surface": "#f0f1f2",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#e5e2e1",
+                        "on-surface": "#1a1c1d",
+                        "primary": "#004ac6",
+                        "surface-container-low": "#f3f3f4",
+                        "tertiary-fixed-dim": "#c0c7d6",
+                        "tertiary-container": "#666d7b",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e2e2e3",
+                        "on-tertiary-fixed": "#151c27",
+                        "surface": "#f9f9fa",
+                        "on-tertiary-fixed-variant": "#404754",
+                        "on-surface-variant": "#434655",
+                        "outline": "#737686",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary": "#4e5562",
+                        "on-secondary-fixed-variant": "#474646"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "gutter": "32px",
+                        "margin-desktop": "64px",
+                        "section-gap": "160px",
+                        "margin-mobile": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-mono": ["Geist"],
+                        "display-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "body-lg": ["20px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "label-mono": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-lg-mobile": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "display-xl": ["72px", { "lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .ghost-elevation { box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.04); }
+        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(229, 231, 235, 0.5); }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar -->
+<nav class="bg-surface-container-lowest/80 backdrop-blur-xl sticky top-0 w-full z-50 border-b border-outline-variant/30 transition-all duration-300">
+<div class="flex justify-between items-center max-w-container-max mx-auto px-margin-desktop h-20">
+<div class="flex items-center gap-2">
+<a href="index.html" class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">hub</span>
+<span class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface">GhostMesh</span>
+</a>
+</div>
+<div class="hidden md:flex items-center gap-8 font-body-md text-body-md">
+<a class="text-primary font-semibold border-b-2 border-primary pb-1" href="index.html">Features</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-200 hover:opacity-80 transition-opacity duration-300 active:scale-95 transition-transform" href="technology.html">Technology</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-200 hover:opacity-80 transition-opacity duration-300 active:scale-95 transition-transform" href="security.html">Security</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-200 hover:opacity-80 transition-opacity duration-300 active:scale-95 transition-transform" href="platform.html">Architecture</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-200 hover:opacity-80 transition-opacity duration-300 active:scale-95 transition-transform" href="mobile.html">Mobile App</a>
+</div>
+<button class="bg-primary-container text-on-primary rounded-xl px-6 py-3 font-body-md font-medium hover:opacity-80 transition-opacity duration-300 active:scale-95 transition-transform hidden md:block">
+                Download
+            </button>
+<button class="md:hidden text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative pt-24 pb-section-gap overflow-hidden">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<div class="lg:col-span-6 relative z-10">
+<div class="absolute inset-0 -z-10 w-[150%] h-[150%] -left-[25%] -top-[25%] opacity-40 pointer-events-none mix-blend-multiply">
+
+</div>
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-variant border border-outline-variant/50 mb-6">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-mono text-label-mono text-on-surface-variant">v2.0 Network Core Live</span>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-xl md:text-display-xl text-on-surface mb-6 leading-tight">
+                        Communication survives.<br/>
+<span class="text-outline">Even when the internet doesn't.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-xl">
+                        Decentralized, end-to-end encrypted mesh networking for critical communications. No cellular service required.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="bg-primary-container text-on-primary px-8 py-4 rounded-xl font-body-md font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                            Get Started
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<button class="bg-transparent border border-outline-variant text-on-surface px-8 py-4 rounded-xl font-body-md font-medium hover:bg-surface-bright transition-colors flex items-center justify-center">
+                            Read the Whitepaper
+                        </button>
+</div>
+</div>
+<div class="lg:col-span-6 relative z-10 flex justify-center lg:justify-end mt-16 lg:mt-0">
+<div class="relative w-full max-w-[400px]">
+<div class="absolute inset-0 bg-primary/5 rounded-[3rem] blur-3xl -z-10 transform translate-y-10"></div>
+<img alt="GhostMesh App Interface on Smartphone" class="w-full h-auto drop-shadow-2xl" src="https://lh3.googleusercontent.com/aida/AP1WRLs5WXDBXrvMZokbAKFOLNPqJsnWWsvOLh0hNEjOvp2I7UlAJoUIiucSfvvQ3V60PxhRtAewxfsw1SOId4bnhBqAA9z6lYdVcuA4tOkm8h5_5T_rwRrpVbZoVNDw4tbKlWrhovtGWASuO05TF_x3pgVwTtgW4cC92lnWsoLqGt7wdUyRshgCZNuiqGmA9FRSquGgRaldAvENbH9WBiED5UhGBcxD6Lkuj4xTvETmretLQ5KzpkBi146eyxs"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Trusted By -->
+<section class="py-20 border-y border-outline-variant/30 bg-surface-bright">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop text-center">
+<p class="font-label-mono text-label-mono text-outline mb-8 uppercase tracking-widest">Trusted by resilient organizations</p>
+<div class="flex flex-wrap justify-center items-center gap-12 opacity-50 grayscale">
+<span class="font-headline-md text-headline-md font-bold">AcmeCorp</span>
+<span class="font-headline-md text-headline-md font-bold">GlobalLogistics</span>
+<span class="font-headline-md text-headline-md font-bold">SecurNet</span>
+<span class="font-headline-md text-headline-md font-bold">AeroSpaceX</span>
+</div>
+</div>
+</section>
+<!-- Why GhostMesh? -->
+<section class="py-section-gap max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="text-center max-w-2xl mx-auto mb-20">
+<h2 class="font-display-lg text-display-lg text-on-surface mb-6">Built for resilience.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">When traditional infrastructure fails, GhostMesh dynamically routes your data across local devices to reach its destination.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="bg-surface-bright border border-outline-variant/50 rounded-xl p-10 hover:ghost-elevation transition-shadow duration-300 group">
+<div class="w-12 h-12 bg-surface-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-on-surface group-hover:text-primary">wifi_off</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3 text-[24px] leading-tight">Zero Infrastructure</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Functions entirely without cell towers, Wi-Fi routers, or satellite uplinks by connecting directly device-to-device.</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-bright border border-outline-variant/50 rounded-xl p-10 hover:ghost-elevation transition-shadow duration-300 group">
+<div class="w-12 h-12 bg-surface-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-on-surface group-hover:text-primary">lock</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3 text-[24px] leading-tight">Cryptographic Security</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Every packet is encrypted end-to-end using double-ratchet algorithms, ensuring only the intended recipient can read it.</p>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-bright border border-outline-variant/50 rounded-xl p-10 hover:ghost-elevation transition-shadow duration-300 group">
+<div class="w-12 h-12 bg-surface-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-on-surface group-hover:text-primary">dynamic_feed</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3 text-[24px] leading-tight">Self-Healing Network</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">The mesh automatically reroutes around nodes that drop offline, maintaining the integrity of the communication web.</p>
+</div>
+</div>
+</section>
+<!-- Bento Grid Features -->
+<section class="py-section-gap bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="mb-16">
+<h2 class="font-display-lg text-display-lg text-on-surface">Advanced capabilities.</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 auto-rows-[320px]">
+<!-- Large Feature -->
+<div class="md:col-span-8 bg-surface-bright border border-outline-variant/50 rounded-xl p-10 relative overflow-hidden flex flex-col justify-between group hover:ghost-elevation transition-shadow">
+<div class="relative z-10 max-w-md">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Store &amp; Forward Protocol</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Messages rest securely on intermediary nodes until the recipient comes online, ensuring delivery across disjointed networks.</p>
+</div>
+<div class="absolute right-0 bottom-0 w-2/3 h-2/3 bg-gradient-to-tl from-surface-variant to-transparent opacity-50 rounded-tl-[100%] pointer-events-none"></div>
+<div class="absolute right-10 bottom-10">
+<span class="material-symbols-outlined text-[120px] text-outline-variant/30 group-hover:text-primary-fixed/50 transition-colors">route</span>
+</div>
+</div>
+<!-- Small Feature -->
+<div class="md:col-span-4 bg-surface-bright border border-outline-variant/50 rounded-xl p-10 flex flex-col justify-between hover:ghost-elevation transition-shadow group">
+<div>
+<h3 class="font-headline-md text-headline-md text-[24px] text-on-surface mb-2">Low Energy</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Optimized BLE and Wi-Fi Direct protocols minimize battery drain.</p>
+</div>
+<div class="flex justify-end">
+<span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary transition-colors">battery_charging_full</span>
+</div>
+</div>
+<!-- Small Feature 2 -->
+<div class="md:col-span-4 bg-surface-bright border border-outline-variant/50 rounded-xl p-10 flex flex-col justify-between hover:ghost-elevation transition-shadow group">
+<div>
+<h3 class="font-headline-md text-headline-md text-[24px] text-on-surface mb-2">Anonymous Routing</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Onion-routed packets prevent traffic analysis by intermediary nodes.</p>
+</div>
+<div class="flex justify-end">
+<span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary transition-colors">visibility_off</span>
+</div>
+</div>
+<!-- Medium Feature -->
+<div class="md:col-span-8 bg-surface-bright border border-outline-variant/50 rounded-xl p-10 relative overflow-hidden flex items-center hover:ghost-elevation transition-shadow">
+<div class="w-1/2 pr-8 z-10">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Cross-Platform</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Seamlessly bridges iOS, Android, and IoT devices into a single unified mesh.</p>
+</div>
+<div class="absolute right-0 top-0 bottom-0 w-1/2 bg-surface-variant/30 flex items-center justify-center">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-5xl text-outline">smartphone</span>
+<span class="material-symbols-outlined text-5xl text-outline">watch</span>
+<span class="material-symbols-outlined text-5xl text-outline">router</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="py-section-gap relative overflow-hidden">
+<div class="absolute inset-0 bg-surface-variant/20 -z-20"></div>
+<!-- Abstract background mesh pattern placeholder -->
+<div class="absolute inset-0 -z-10 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent bg-[length:20px_20px]" style="background-image: radial-gradient(circle, #c3c6d7 1px, transparent 1px);"></div>
+<div class="max-w-3xl mx-auto px-margin-mobile text-center">
+<h2 class="font-display-lg text-display-lg text-on-surface mb-6">Ready to go off-grid?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10">
+                    Download the GhostMesh SDK and start building resilient applications today.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="bg-primary-container text-on-primary px-8 py-4 rounded-xl font-body-md font-medium hover:opacity-90 transition-opacity">
+                        Download SDK
+                    </button>
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface px-8 py-4 rounded-xl font-body-md font-medium hover:bg-surface-bright transition-colors">
+                        View Documentation
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-bright border-t border-outline-variant w-full py-section-gap">
+<div class="flex flex-col items-center gap-unit max-w-container-max mx-auto px-margin-desktop text-center">
+<div class="font-headline-md text-headline-md font-bold text-on-surface mb-8 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">hub</span>
+                GhostMesh
+            </div>
+<div class="flex flex-wrap justify-center gap-8 mb-12">
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">Privacy</a>
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">Terms</a>
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">Support</a>
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">GitHub</a>
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">Documentation</a>
+</div>
+<p class="font-label-mono text-label-mono text-secondary">
+                © 2024 GhostMesh. Secure. Offline. Decentralized.
+            </p>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GhostMesh - Security</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@500&amp;family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e2e2e3",
+                        "surface-container": "#eeeeef",
+                        "on-primary-fixed": "#00174b",
+                        "outline-variant": "#c3c6d7",
+                        "surface-bright": "#f9f9fa",
+                        "on-tertiary-container": "#eaf0ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-secondary-container": "#656464",
+                        "secondary": "#5f5e5e",
+                        "primary-container": "#2563eb",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "surface-tint": "#0053db",
+                        "surface-container-high": "#e8e8e9",
+                        "background": "#f9f9fa",
+                        "surface-dim": "#dadadb",
+                        "inverse-surface": "#2f3132",
+                        "on-primary-container": "#eeefff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-background": "#1a1c1d",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-fixed": "#dce2f3",
+                        "inverse-on-surface": "#f0f1f2",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#e5e2e1",
+                        "on-surface": "#1a1c1d",
+                        "primary": "#004ac6",
+                        "surface-container-low": "#f3f3f4",
+                        "tertiary-fixed-dim": "#c0c7d6",
+                        "tertiary-container": "#666d7b",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e2e2e3",
+                        "on-tertiary-fixed": "#151c27",
+                        "surface": "#f9f9fa",
+                        "on-tertiary-fixed-variant": "#404754",
+                        "on-surface-variant": "#434655",
+                        "outline": "#737686",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary": "#4e5562",
+                        "on-secondary-fixed-variant": "#474646"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "gutter": "32px",
+                        "margin-desktop": "64px",
+                        "section-gap": "160px",
+                        "margin-mobile": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-mono": ["Geist"],
+                        "display-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "body-lg": ["20px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "label-mono": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-lg-mobile": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "display-xl": ["72px", { "lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(247, 247, 248, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        
+        .dark-glass-panel {
+            background: rgba(47, 49, 50, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .lock-pulse {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.8;
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2);
+            }
+            70% {
+                transform: scale(1);
+                opacity: 0;
+                box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 0;
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased">
+<!-- TopNavBar -->
+<nav class="bg-surface-container-lowest/80 backdrop-blur-xl sticky top-0 w-full z-50 border-b border-outline-variant/30 flat no shadows">
+<div class="flex justify-between items-center max-w-container-max mx-auto px-margin-desktop h-20">
+<a href="index.html" class="flex items-center gap-2 font-headline-md text-headline-md font-bold tracking-tight text-on-surface">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">hub</span>
+GhostMesh
+</a>
+<div class="hidden md:flex gap-gutter items-center">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors duration-200" href="index.html">Features</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors duration-200" href="technology.html">Technology</a>
+<a class="font-body-md text-body-md text-primary font-semibold border-b-2 border-primary pb-1" href="security.html">Security</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors duration-200" href="platform.html">Architecture</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors duration-200" href="mobile.html">Mobile App</a>
+</div>
+<button class="font-body-md text-body-md text-primary dark:text-inverse-primary hover:opacity-80 transition-opacity duration-300 active:scale-95 transition-transform bg-transparent border border-outline-variant rounded-lg px-unit py-unit flex items-center justify-center min-w-[120px]">
+                Download
+            </button>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="bg-inverse-surface text-on-tertiary py-section-gap px-margin-mobile md:px-margin-desktop overflow-hidden relative">
+<!-- Abstract Background Pattern -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 50% 50%, #ffffff 1px, transparent 1px); background-size: 40px 40px;"></div>
+<div class="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-gutter relative z-10">
+<div class="md:col-span-8 md:col-start-3 text-center flex flex-col items-center">
+<div class="inline-flex items-center justify-center p-4 rounded-full bg-white/5 mb-8 relative">
+<span class="material-symbols-outlined text-4xl lock-pulse" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-tertiary mb-6">Privacy by Design.</h1>
+<p class="font-body-lg text-body-lg text-on-tertiary/70 max-w-2xl mx-auto">
+                    Security isn't an add-on; it's the foundation. GhostMesh operates without central authorities, ensuring your data, identity, and metadata remain exclusively yours.
+                </p>
+</div>
+</div>
+</section>
+<!-- Bento Grid Features -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-background">
+<div class="max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-unit">
+<!-- Feature 1: End-to-End Encryption -->
+<div class="md:col-span-8 bg-[#F7F7F8] rounded-xl border border-[#E5E7EB] p-10 flex flex-col justify-between h-[400px] shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
+<div>
+<span class="material-symbols-outlined text-primary mb-4 text-3xl" style="font-variation-settings: 'FILL' 1;">enhanced_encryption</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">End-to-End Encryption</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+                            Every packet traversing the mesh is encrypted with perfect forward secrecy. Even intermediate routing nodes cannot inspect payload contents.
+                        </p>
+</div>
+<div class="self-end w-full max-w-sm mt-8 border-t border-outline-variant/30 pt-4">
+<div class="flex justify-between items-center text-label-mono font-label-mono text-tertiary-container">
+<span>ALGORITHM</span>
+<span>XChaCha20-Poly1305</span>
+</div>
+</div>
+</div>
+<!-- Feature 2: No Central Servers -->
+<div class="md:col-span-4 bg-[#F7F7F8] rounded-xl border border-[#E5E7EB] p-10 flex flex-col justify-between h-[400px]">
+<div>
+<span class="material-symbols-outlined text-secondary mb-4 text-3xl">dns</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">No Central Servers</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                            A truly serverless architecture. GhostMesh relies on distributed hash tables (DHT) and local peering to establish connections.
+                        </p>
+</div>
+</div>
+<!-- Feature 3: Rotating Device IDs -->
+<div class="md:col-span-4 bg-[#F7F7F8] rounded-xl border border-[#E5E7EB] p-10 flex flex-col justify-between h-[400px]">
+<div>
+<span class="material-symbols-outlined text-secondary mb-4 text-3xl">autorenew</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Rotating Device IDs</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                            Preventing physical tracking. Identifiers rotate probabilistically, making long-term observation mathematically infeasible.
+                        </p>
+</div>
+</div>
+<!-- Feature 4: Zero Metadata -->
+<div class="md:col-span-8 bg-[#F7F7F8] rounded-xl border border-[#E5E7EB] p-10 flex flex-col justify-between h-[400px]">
+<div>
+<span class="material-symbols-outlined text-secondary mb-4 text-3xl">visibility_off</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Zero Metadata Collection</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+                            We don't collect who you talk to, when you talk, or how much data you transmit. Onion routing principles obscure sender-receiver pairs.
+                        </p>
+</div>
+<div class="flex gap-2 opacity-50">
+<!-- Decorative visual element -->
+<div class="h-2 w-12 bg-outline rounded-full"></div>
+<div class="h-2 w-4 bg-outline rounded-full"></div>
+<div class="h-2 w-16 bg-outline rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Deep Dive: Local Key Generation -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
+<div class="md:col-span-5">
+<div class="bg-surface-container p-8 rounded-xl border border-outline-variant/30 flex justify-center items-center h-[500px] relative overflow-hidden">
+<!-- Minimalist graphic representing local keygen -->
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-64 h-64 border border-primary/20 rounded-full animate-[spin_60s_linear_infinite] absolute"></div>
+<div class="w-48 h-48 border border-primary/40 rounded-full animate-[spin_40s_linear_infinite_reverse] absolute"></div>
+<div class="bg-primary-container text-on-primary-container p-6 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] z-10">
+<span class="material-symbols-outlined text-5xl">key</span>
+</div>
+</div>
+</div>
+</div>
+<div class="md:col-span-6 md:col-start-7 flex flex-col justify-center">
+<span class="font-label-mono text-label-mono text-primary uppercase tracking-wider mb-4">Offline Authentication</span>
+<h2 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-6">Your Device is the Authority.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-8">
+                    Identity on GhostMesh is generated locally upon installation. Cryptographic key pairs are derived from entropy gathered directly on your device, never touching an external server.
+                </p>
+<div class="space-y-6">
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+<div>
+<h4 class="font-body-md text-body-md font-semibold text-on-surface">Local Key Generation</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Ed25519 keypairs are generated entirely offline.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+<div>
+<h4 class="font-body-md text-body-md font-semibold text-on-surface">Self-Sovereign Identity</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Your public key acts as your verifiable address on the mesh.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-surface-bright dark:bg-surface-dim w-full py-section-gap border-t border-outline-variant flat no shadows">
+<div class="flex flex-col items-center gap-unit max-w-container-max mx-auto px-margin-desktop">
+<div class="font-headline-md text-headline-md font-bold text-on-surface mb-8">GhostMesh</div>
+<div class="flex gap-gutter mb-8">
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">Privacy</a>
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">Terms</a>
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">Support</a>
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">GitHub</a>
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">Documentation</a>
+</div>
+<div class="font-label-mono text-label-mono text-secondary dark:text-secondary-fixed-dim">
+                © 2024 GhostMesh. Secure. Offline. Decentralized.
+            </div>
+</div>
+</footer>
+</body></html>

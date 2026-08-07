@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GhostMesh - Technology &amp; Architecture</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@500&amp;family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e2e2e3",
+                        "surface-container": "#eeeeef",
+                        "on-primary-fixed": "#00174b",
+                        "outline-variant": "#c3c6d7",
+                        "surface-bright": "#f9f9fa",
+                        "on-tertiary-container": "#eaf0ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-secondary-container": "#656464",
+                        "secondary": "#5f5e5e",
+                        "primary-container": "#2563eb",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "surface-tint": "#0053db",
+                        "surface-container-high": "#e8e8e9",
+                        "background": "#f9f9fa",
+                        "surface-dim": "#dadadb",
+                        "inverse-surface": "#2f3132",
+                        "on-primary-container": "#eeefff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-background": "#1a1c1d",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-fixed": "#dce2f3",
+                        "inverse-on-surface": "#f0f1f2",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#e5e2e1",
+                        "on-surface": "#1a1c1d",
+                        "primary": "#004ac6",
+                        "surface-container-low": "#f3f3f4",
+                        "tertiary-fixed-dim": "#c0c7d6",
+                        "tertiary-container": "#666d7b",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e2e2e3",
+                        "on-tertiary-fixed": "#151c27",
+                        "surface": "#f9f9fa",
+                        "on-tertiary-fixed-variant": "#404754",
+                        "on-surface-variant": "#434655",
+                        "outline": "#737686",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary": "#4e5562",
+                        "on-secondary-fixed-variant": "#474646"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "gutter": "32px",
+                        "margin-desktop": "64px",
+                        "section-gap": "160px",
+                        "margin-mobile": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-mono": ["Geist"],
+                        "display-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "body-lg": ["20px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "label-mono": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-lg-mobile": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "display-xl": ["72px", { "lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="sticky top-0 w-full z-50 bg-surface-container-lowest/80 backdrop-blur-xl border-b border-outline-variant/30 transition-all duration-300">
+<div class="flex justify-between items-center max-w-container-max mx-auto px-margin-desktop h-20">
+<a class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface hover:opacity-80 transition-opacity duration-300 flex items-center gap-2" href="index.html">
+                <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">hub</span>
+                GhostMesh
+            </a>
+<div class="hidden md:flex items-center gap-gutter">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-200 font-body-md text-body-md active:scale-95 transition-transform hover:opacity-80 transition-opacity duration-300" href="index.html">Features</a>
+<a class="text-primary font-semibold border-b-2 border-primary pb-1 font-body-md text-body-md active:scale-95 transition-transform hover:opacity-80 transition-opacity duration-300" href="technology.html">Technology</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-200 font-body-md text-body-md active:scale-95 transition-transform hover:opacity-80 transition-opacity duration-300" href="security.html">Security</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-200 font-body-md text-body-md active:scale-95 transition-transform hover:opacity-80 transition-opacity duration-300" href="platform.html">Architecture</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-200 font-body-md text-body-md active:scale-95 transition-transform hover:opacity-80 transition-opacity duration-300" href="mobile.html">Mobile App</a>
+</div>
+<button class="text-primary dark:text-inverse-primary font-label-mono text-label-mono bg-surface-container-highest px-4 py-2 rounded-lg hover:opacity-80 transition-opacity duration-300 active:scale-95">
+                Download
+            </button>
+</div>
+</nav>
+<main class="w-full">
+<!-- Hero Section -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-32 pb-section-gap flex flex-col items-center text-center">
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-xl md:text-display-xl text-on-surface mb-8 max-w-4xl leading-tight">
+                Built for <span class="text-primary">Resilience.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-12">
+                Decentralized communication infrastructure designed to operate when traditional networks fail.
+            </p>
+<div class="w-full max-w-5xl rounded-xl border border-outline-variant/50 bg-surface-container-lowest shadow-[0_20px_40px_rgba(0,0,0,0.04)] overflow-hidden aspect-[2/1] relative flex items-center justify-center">
+<img class="w-full h-full object-cover opacity-90 mix-blend-multiply" data-alt="A highly detailed, technical 3D isometric diagram of a mesh network floating in a clean, minimalist studio environment with a light grey background. Devices like smartphones and subtle geometric server nodes are connected by glowing, ethereal blue lines indicating data transfer. The lighting is soft and professional, emphasizing the high-end consumer hardware aesthetic and technical precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBV1Q7XvbzyEhCZhTSScqNaEF0QJAWUu5udZ1uzJysfzRl3ZwgF3xIraTH6tyOdsGRJWXqaJtcJniBVyKhFw3djtB-calfhwpnhGqA6_DBNvPNJfbS2Jsf7rd6Y1fAkNd3ogbQWzagLAeLZnnaR1WvjdEr4rUhpJFHVjFk8uZzCBJ-lnAJtl1YNctWl95aHJcq0_YRCv8B5aio8VLxcCiZkL6clsh5vyU7kGWbRec2fBqoBC2Uiv4oEhA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 to-transparent flex items-end p-8">
+<p class="font-label-mono text-label-mono text-on-surface">Interactive Architecture Flow</p>
+</div>
+</div>
+</section>
+<!-- Comparison Table Section -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pb-section-gap">
+<div class="mb-12">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">Architecture Comparison</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl">How GhostMesh structural design compares to existing paradigms.</p>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant/30">
+<th class="py-6 px-4 font-label-mono text-label-mono text-on-surface-variant w-1/4">Feature</th>
+<th class="py-6 px-4 font-label-mono text-label-mono text-primary bg-surface-bright rounded-t-xl w-1/4">GhostMesh</th>
+<th class="py-6 px-4 font-label-mono text-label-mono text-on-surface-variant w-1/4">Traditional Messaging</th>
+<th class="py-6 px-4 font-label-mono text-label-mono text-on-surface-variant w-1/4">Bridgefy</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md text-on-surface">
+<tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50 transition-colors">
+<td class="py-6 px-4 text-on-surface-variant">Architecture</td>
+<td class="py-6 px-4 bg-surface-bright font-semibold text-on-surface">Offline-First Mesh</td>
+<td class="py-6 px-4">Centralized Server</td>
+<td class="py-6 px-4">Bluetooth Only Mesh</td>
+</tr>
+<tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50 transition-colors">
+<td class="py-6 px-4 text-on-surface-variant">Routing</td>
+<td class="py-6 px-4 bg-surface-bright font-semibold text-on-surface">Adaptive (BT + Wi-Fi)</td>
+<td class="py-6 px-4">Static (Internet)</td>
+<td class="py-6 px-4">Linear Flooding</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest/50 transition-colors">
+<td class="py-6 px-4 text-on-surface-variant">Message Handling</td>
+<td class="py-6 px-4 bg-surface-bright rounded-b-xl font-semibold text-on-surface">Store &amp; Forward</td>
+<td class="py-6 px-4">Real-time Only</td>
+<td class="py-6 px-4">Volatile Cache</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Developer Ecosystem -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pb-section-gap">
+<div class="mb-12">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">Developer Ecosystem</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl">Tools to build resilient decentralized applications.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- SDK Card -->
+<div class="bg-surface-bright border border-outline-variant/30 p-10 rounded-xl flex flex-col justify-between aspect-square hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-shadow duration-300">
+<div>
+<span class="material-symbols-outlined text-primary mb-6" style="font-size: 32px; font-variation-settings: 'FILL' 1;">integration_instructions</span>
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface mb-2">Core SDK</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Embed GhostMesh capabilities into iOS and Android applications with native libraries.</p>
+</div>
+<a class="font-label-mono text-label-mono text-primary hover:underline flex items-center gap-2 mt-8" href="#">View Documentation <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+</div>
+<!-- API Card -->
+<div class="bg-surface-bright border border-outline-variant/30 p-10 rounded-xl flex flex-col justify-between aspect-square hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-shadow duration-300">
+<div>
+<span class="material-symbols-outlined text-primary mb-6" style="font-size: 32px; font-variation-settings: 'FILL' 1;">api</span>
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface mb-2">Routing API</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Low-level access to the adaptive routing engine for custom packet handling and prioritization.</p>
+</div>
+<a class="font-label-mono text-label-mono text-primary hover:underline flex items-center gap-2 mt-8" href="#">API Reference <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+</div>
+<!-- Simulator Card -->
+<div class="bg-surface-bright border border-outline-variant/30 p-10 rounded-xl flex flex-col justify-between aspect-square hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-shadow duration-300">
+<div>
+<span class="material-symbols-outlined text-primary mb-6" style="font-size: 32px; font-variation-settings: 'FILL' 1;">bug_report</span>
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface mb-2">Mesh Simulator</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Test application behavior under various network partitioning and node failure scenarios locally.</p>
+</div>
+<a class="font-label-mono text-label-mono text-primary hover:underline flex items-center gap-2 mt-8" href="#">Download Tools <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap bg-surface-bright dark:bg-surface-dim border-t border-outline-variant">
+<div class="flex flex-col items-center gap-unit max-w-container-max mx-auto px-margin-desktop">
+<div class="font-headline-md text-headline-md font-bold text-on-surface mb-4">
+                GhostMesh
+            </div>
+<div class="flex flex-wrap justify-center gap-6 mb-6">
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">Privacy</a>
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">Terms</a>
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">Support</a>
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">GitHub</a>
+<a class="font-label-mono text-label-mono text-on-secondary-container hover:text-on-surface hover:underline transition-all" href="#">Documentation</a>
+</div>
+<p class="font-label-mono text-label-mono text-secondary dark:text-secondary-fixed-dim">
+                © 2024 GhostMesh. Secure. Offline. Decentralized.
+            </p>
+</div>
+</footer>
+</body></html>

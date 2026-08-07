@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GhostMesh - Offline Secure Messaging</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@500&amp;family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#1a1c1d",
+                        "surface-container-highest": "#e2e2e3",
+                        "secondary": "#5f5e5e",
+                        "surface-tint": "#0053db",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#434655",
+                        "inverse-surface": "#2f3132",
+                        "on-primary-fixed": "#00174b",
+                        "on-primary-container": "#eeefff",
+                        "surface-container": "#eeeeef",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-container": "#666d7b",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#c0c7d6",
+                        "surface-dim": "#dadadb",
+                        "primary-container": "#2563eb",
+                        "inverse-primary": "#b4c5ff",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "primary": "#004ac6",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-container-low": "#f3f3f4",
+                        "tertiary-fixed": "#dce2f3",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "tertiary": "#4e5562",
+                        "surface": "#f9f9fa",
+                        "background": "#f9f9fa",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f9f9fa",
+                        "secondary-container": "#e5e2e1",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-container": "#656464",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-surface": "#1a1c1d",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#404754",
+                        "on-tertiary-container": "#eaf0ff",
+                        "surface-container-high": "#e8e8e9",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-tertiary-fixed": "#151c27",
+                        "outline": "#737686",
+                        "on-secondary-fixed-variant": "#474646",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-variant": "#e2e2e3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "32px",
+                        "container-max": "1280px",
+                        "margin-mobile": "24px",
+                        "margin-desktop": "64px",
+                        "unit": "8px",
+                        "section-gap": "160px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-xl": ["Inter"],
+                        "label-mono": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "display-xl": ["72px", { "lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                        "label-mono": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-lg": ["20px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        .bento-card {
+            background-color: #F7F7F8;
+            border: 1px solid #E5E7EB;
+        }
+        .glass-nav {
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl docked full-width top-0 sticky z-50 border-b border-outline-variant/30 dark:border-outline/20">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+<a href="index.html" class="flex items-center gap-2 hover:opacity-70 transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed">hub</span>
+<span class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg font-bold text-on-background dark:text-surface-bright" style="font-size: 24px; line-height: 1;">GhostMesh</span>
+</a>
+<div class="hidden md:flex items-center gap-8 font-body-md text-body-md">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="index.html">Features</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="technology.html">Technology</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="security.html">Security</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="platform.html">Architecture</a>
+<a class="text-primary font-semibold border-b-2 border-primary pb-1" href="mobile.html">Mobile App</a>
+</div>
+<button class="bg-primary-container text-on-primary font-label-mono text-label-mono px-4 py-2 rounded-lg hover:opacity-90 transition-opacity">
+                Download
+            </button>
+</div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative min-h-[90vh] flex items-center justify-center pt-24 pb-section-gap overflow-hidden">
+<!-- STITCH_SHADER_START:ANIMATION_1 class="absolute inset-0 w-full h-full opacity-30 pointer-events-none" -->
+<div class="absolute inset-0 w-full h-full opacity-30 pointer-events-none" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_1" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_1');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+varying vec2 v_texCoord;
+uniform float u_time;
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+
+// Simple hash function for randomness
+float hash(vec2 p) {
+    p = fract(p * vec2(123.34, 456.21));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
+}
+
+void main() {
+    vec2 uv = v_texCoord;
+    vec2 p = uv * 10.0; // Scale the grid
+    vec2 ip = floor(p);
+    vec2 fp = fract(p);
+    
+    float m = 0.0;
+    float t = u_time * 0.5;
+    
+    // Check neighboring cells to draw lines
+    for(int y=-1; y<=1; y++) {
+        for(int x=-1; x<=1; x++) {
+            vec2 neighbor = vec2(float(x), float(y));
+            vec2 point = neighbor + vec2(hash(ip + neighbor), hash(ip + neighbor + 123.4));
+            // Animate point position
+            point = neighbor + 0.5 + 0.4 * vec2(sin(t + hash(ip+neighbor)*6.28), cos(t + hash(ip+neighbor)*6.28));
+            
+            float d = length(fp - point);
+            
+            // Draw nodes
+            m += smoothstep(0.08, 0.05, d);
+            
+            // Draw connections to nearby points (approximate)
+            if(x == 0 && y == 0) continue;
+            // Line drawing logic simplified for performance/visuals
+            float distToLine = length(fp - 0.5); // Placeholder for actual line math
+        }
+    }
+
+    vec3 color = mix(vec3(1.0), vec3(0.145, 0.388, 0.922), m * 0.2); // Subtle blue nodes
+    
+    // Background gradient
+    vec3 bg = mix(vec3(1.0), vec3(0.97, 0.98, 1.0), uv.y);
+    
+    gl_FragColor = vec4(mix(bg, color, m), 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_1 -->
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10 w-full grid md:grid-cols-2 gap-gutter items-center">
+<div class="flex flex-col gap-8 max-w-2xl">
+<h1 class="font-display-xl text-display-xl text-on-background">Communication survives. Even when the internet doesn't.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">GhostMesh creates secure, encrypted mesh networks between nearby devices, keeping people connected during disasters, blackouts, and remote expeditions.</p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="bg-primary-container text-on-primary font-label-mono text-label-mono px-8 py-4 rounded-xl hover:opacity-90 transition-opacity shadow-[0_20px_40px_rgba(37,99,235,0.2)]">Download GhostMesh</button>
+<button class="border border-outline bg-transparent hover:bg-surface-container-low text-on-background font-label-mono text-label-mono px-8 py-4 rounded-xl transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">play_circle</span>
+                            Watch Demo
+                        </button>
+</div>
+</div>
+<div class="relative w-full h-[600px] flex justify-center items-center">
+<img alt="GhostMesh App Interface on Mobile Phone" class="h-full w-auto object-contain drop-shadow-2xl absolute z-20 transform hover:scale-105 transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJh1cWQtDgNn_8ThzD_W1caAreHFTBDChsywdj66WnhwJPLTEepA6fciMRtFCwviQ1RSen8dedvU0oaQCkutr8CpHDW0xtH1x61Un63D8y2f6ezQKaOYIc4DfwUG6ehlzVEKrlXg9VqGL8K9XYRyDf35Z4uNlqkL-YTj5NOiDoFhlGIC-3JIRm-5Vz71Tlh10H8p_6_n-ebRar0Z2PWTbl3wLJPOpOOYPsZQ4Azpwh65AGAzHOLWvIBQ"/>
+<!-- Abstract glowing background element behind phone -->
+<div class="absolute w-96 h-96 bg-primary-container rounded-full blur-[100px] opacity-20 z-10 animate-pulse"></div>
+</div>
+</div>
+</section>
+<!-- How it Works -->
+<section class="py-section-gap bg-surface-container-lowest border-y border-outline-variant/30">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="text-center mb-20">
+<h2 class="font-display-lg text-display-lg text-on-background mb-4">How it Works</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Seamless connection, zero configuration.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="bento-card rounded-xl p-10 flex flex-col items-center text-center group hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-shadow">
+<div class="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">radar</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background mb-3">Step 1: Discover</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Devices automatically locate nearby GhostMesh nodes via Bluetooth and Wi-Fi Direct.</p>
+</div>
+<!-- Card 2 -->
+<div class="bento-card rounded-xl p-10 flex flex-col items-center text-center group hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-shadow">
+<div class="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">route</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background mb-3">Step 2: Hop</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Messages bounce securely from device to device, extending range infinitely as long as nodes are present.</p>
+</div>
+<!-- Card 3 -->
+<div class="bento-card rounded-xl p-10 flex flex-col items-center text-center group hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-shadow">
+<div class="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">mark_email_read</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background mb-3">Step 3: Deliver</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Encrypted packets are reassembled at the destination, ensuring only the intended recipient can read them.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface dark:bg-on-background full-width border-t border-outline-variant/20 dark:border-outline/10">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-12 max-w-container-max mx-auto gap-8">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">hub</span>
+<span class="font-label-mono text-label-mono text-on-background dark:text-surface-bright">GhostMesh</span>
+</div>
+<div class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim text-center">
+                © 2024 GhostMesh. Secured by decentralized nodes.
+            </div>
+<nav class="flex gap-6">
+<a class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-all opacity-hover-effect" href="#">GitHub</a>
+<a class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-all opacity-hover-effect" href="#">Docs</a>
+<a class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-all opacity-hover-effect" href="#">Privacy</a>
+<a class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-all opacity-hover-effect" href="#">Security</a>
+</nav>
+</div>
+</footer>
+</body></html>
