@@ -456,16 +456,23 @@ export default function MobileControllerPage() {
     setChatMessages((prev) => [...prev, newMsg]);
     setPacketCount((prev) => prev + 1);
 
-    // 2. Transmit via Socket.io relay ONLY IF NOT RUNNING IN CAPACITOR CONTAINER
-    if (!isCapacitorNative && socketRef.current && socketRef.current.connected) {
-      socketRef.current.emit("SEND_MESH_PACKET", {
+    // 2. Transmit via Socket.io relay
+    if (socketRef.current && socketRef.current.connected) {
+      const socketPayload = {
+        id: msgId,
+        packetId: msgId,
         senderId: nodeId,
         targetNodeId: selectedTarget,
         encryptedPayload: hexPayload,
         plainTextPreview: message,
+        plainText: message,
+        timestamp: newMsg.timestamp,
         hops: 1,
         ttl: 16,
-      });
+      };
+      socketRef.current.emit("SEND_MESH_PACKET", socketPayload);
+      socketRef.current.emit("send_payload", socketPayload);
+      socketRef.current.emit("broadcast_payload", socketPayload);
     }
 
     // 3. Transmit over Native Android GhostMeshBLE Java Plugin & Capgo BLE

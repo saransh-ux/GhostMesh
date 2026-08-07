@@ -63,6 +63,7 @@ io.on('connection', (socket) => {
 
   socket.on('REGISTER_NODE', handleRegisterNode);
   socket.on('register_node', handleRegisterNode);
+  socket.on('node_connected', handleRegisterNode);
 
   // 2. Real-Time Telemetry & Adaptive Power Mode Updates
   socket.on('UPDATE_TELEMETRY', (update) => {
@@ -121,6 +122,7 @@ io.on('connection', (socket) => {
   };
 
   socket.on('SEND_MESH_PACKET', handleMeshPacket);
+  socket.on('send_payload', handleMeshPacket);
   socket.on('broadcast_payload', handleMeshPacket);
   socket.on('chat_message', handleMeshPacket);
 
