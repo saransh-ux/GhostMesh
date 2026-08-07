@@ -106,7 +106,7 @@ export default function Navbar({
           </Link>
 
           <a
-            href="./mobile.html"
+            href="/mobile"
             target="_blank"
             className="hidden sm:flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-md shadow-blue-600/20 transition-all active:scale-95"
           >

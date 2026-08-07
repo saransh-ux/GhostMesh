@@ -22,8 +22,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               if (typeof window !== 'undefined' && (window.Capacitor || /Android|iPhone/i.test(navigator.userAgent))) {
-                if (!window.location.pathname.endsWith('mobile.html') && !window.location.pathname.includes('/mobile')) {
-                  window.location.replace('./mobile.html');
+                if (!window.location.pathname.includes('/mobile')) {
+                  window.location.replace('/mobile');
                 }
               }
             `,

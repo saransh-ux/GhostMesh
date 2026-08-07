@@ -40,7 +40,7 @@ export default function HeroLanding({ onOpenLiveDemo }: HeroLandingProps) {
               </button>
 
               <a
-                href="./mobile.html"
+                href="/mobile"
                 target="_blank"
                 className="bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 px-8 py-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all"
               >

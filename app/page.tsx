@@ -52,7 +52,7 @@ export default function Home() {
 
       if (isCapacitor) {
         console.log("[GhostMesh] Capacitor native platform detected. Redirecting to mobile view.");
-        window.location.replace("./mobile.html");
+        window.location.replace("/mobile");
         return;
       }
     }
@@ -192,7 +192,7 @@ export default function Home() {
                 </div>
 
                 <a
-                  href="./mobile.html"
+                  href="/mobile"
                   target="_blank"
                   className="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-4 py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 active:scale-95 transition-all w-full md:w-auto shrink-0"
                 >
