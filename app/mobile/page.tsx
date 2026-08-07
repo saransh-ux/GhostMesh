@@ -221,7 +221,14 @@ export default function MobileControllerPage() {
     const isIOS = /iPhone|iPad|iPod/i.test(ua);
     const isAndroid = /Android/i.test(ua);
     const platformName = isCap ? "Capacitor Android Native" : isIOS ? "Apple iOS" : isAndroid ? "Android Handset" : "Mobile Phone";
-    const generatedNodeId = stored ? stored.nodeId : `NODE-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    let urlNodeId: string | null = null;
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      urlNodeId = searchParams.get("nodeId");
+    }
+
+    const generatedNodeId = urlNodeId || (stored ? stored.nodeId : `NODE-${Math.floor(100000 + Math.random() * 900000)}`);
 
     const initialTelemetry: NodeTelemetry = {
       nodeId: generatedNodeId,

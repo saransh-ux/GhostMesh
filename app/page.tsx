@@ -43,16 +43,19 @@ export default function Home() {
     if (typeof window !== "undefined") {
       setOriginUrl(window.location.origin);
 
-      // Check if running in Capacitor native container or mobile environment
+      const searchParams = new URLSearchParams(window.location.search);
+      const queryNodeId = searchParams.get("nodeId");
+      const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       const isCapacitor =
         !!(window as any).Capacitor?.isNativePlatform?.() ||
         !!(window as any).Capacitor ||
         window.location.protocol === "capacitor:" ||
         navigator.userAgent.includes("Capacitor");
 
-      if (isCapacitor) {
-        console.log("[GhostMesh] Capacitor native platform detected. Redirecting to mobile view.");
-        window.location.replace("/mobile");
+      if (queryNodeId || isMobileUA || isCapacitor) {
+        console.log("[GhostMesh] Mobile environment or nodeId query detected. Redirecting to /mobile.");
+        const targetNodeId = queryNodeId || nodeId;
+        window.location.replace(`${window.location.origin}/mobile?nodeId=${targetNodeId}`);
         return;
       }
     }
