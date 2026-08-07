@@ -18,6 +18,17 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined' && (window.Capacitor || /Android|iPhone/i.test(navigator.userAgent))) {
+                if (!window.location.pathname.endsWith('mobile.html') && !window.location.pathname.includes('/mobile')) {
+                  window.location.replace('./mobile.html');
+                }
+              }
+            `,
+          }}
+        />
       </head>
       <body className="antialiased selection:bg-blue-600 selection:text-white">
         {children}

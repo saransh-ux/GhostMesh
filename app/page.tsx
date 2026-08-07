@@ -7,6 +7,7 @@ import LiveTopologyMap, { MeshNode } from "@/components/LiveTopologyMap";
 import EvervaultTerminal, { MeshPacket } from "@/components/EvervaultTerminal";
 import SosBanner, { SosAlertData } from "@/components/SosBanner";
 import HeroLanding from "@/components/HeroLanding";
+import { QRCodeSVG } from "qrcode.react";
 import { 
   Radio, 
   ShieldCheck, 
@@ -20,7 +21,8 @@ import {
   ExternalLink,
   Send,
   Zap,
-  CheckCircle2
+  CheckCircle2,
+  QrCode
 } from "lucide-react";
 
 export default function Home() {
@@ -32,32 +34,55 @@ export default function Home() {
   const [sosAlert, setSosAlert] = useState<SosAlertData | null>(null);
   const [lastSender, setLastSender] = useState<string | undefined>(undefined);
   const [manualMessage, setManualMessage] = useState("");
+  const [originUrl, setOriginUrl] = useState<string>("");
+
+  const nodeId = "GATEWAY-01";
+  const mobileUrl = `${originUrl || (typeof window !== "undefined" ? window.location.origin : "")}/mobile?nodeId=${nodeId}`;
 
   useEffect(() => {
-    // Connect to deployed Render backend
-const serverUrl =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    if (typeof window !== "undefined") {
+      setOriginUrl(window.location.origin);
 
-console.log("[Dashboard] Connecting to Socket.io relay:", serverUrl);
+      // Check if running in Capacitor native container or mobile environment
+      const isCapacitor =
+        !!(window as any).Capacitor?.isNativePlatform?.() ||
+        !!(window as any).Capacitor ||
+        window.location.protocol === "capacitor:" ||
+        navigator.userAgent.includes("Capacitor");
 
-const newSocket = io(serverUrl, {
-  transports: ["websocket", "polling"],
-  reconnectionAttempts: 10,
-});
+      if (isCapacitor) {
+        console.log("[GhostMesh] Capacitor native platform detected. Redirecting to mobile view.");
+        window.location.replace("./mobile.html");
+        return;
+      }
+    }
+
+    // Connect to Socket.io relay
+    const serverUrl =
+      process.env.NEXT_PUBLIC_API_URL || (typeof window !== "undefined" ? window.location.origin : "http://localhost:3001");
+
+    console.log("[Dashboard] Connecting to Socket.io relay:", serverUrl);
+
+    const newSocket = io(serverUrl, {
+      transports: ["websocket", "polling"],
+      reconnectionAttempts: 10,
+    });
 
     setSocket(newSocket);
 
     newSocket.on("connect", () => {
       setIsConnected(true);
       // Register Gateway node
-      newSocket.emit("REGISTER_NODE", {
+      const registerPayload = {
         nodeId: "GATEWAY-01",
         deviceType: "Desktop Core Gateway",
         platform: "Next.js Command Center",
         batteryLevel: 100,
         rssi: 0,
         status: "Command Center Online"
-      });
+      };
+      newSocket.emit("REGISTER_NODE", registerPayload);
+      newSocket.emit("register_node", registerPayload);
     });
 
     newSocket.on("disconnect", () => {
@@ -65,18 +90,23 @@ const newSocket = io(serverUrl, {
     });
 
     // 1. Listen for updated mesh node telemetry roster
-    newSocket.on("MESH_NODES_UPDATED", (updatedNodes: MeshNode[]) => {
+    const handleNodesUpdated = (updatedNodes: MeshNode[]) => {
       console.log("[Dashboard] Mesh nodes updated:", updatedNodes);
       setNodes(updatedNodes);
-    });
+    };
+    newSocket.on("MESH_NODES_UPDATED", handleNodesUpdated);
+    newSocket.on("nodes_updated", handleNodesUpdated);
 
     // 2. Listen for incoming mesh packet streams
-    newSocket.on("RECEIVE_MESH_PACKET", (packet: MeshPacket) => {
+    const handleIncomingPacket = (packet: MeshPacket) => {
       console.log("[Dashboard] Received mesh packet:", packet);
       setPackets((prev) => [packet, ...prev.slice(0, 49)]);
       setLastSender(packet.senderId);
       setTimeout(() => setLastSender(undefined), 3000);
-    });
+    };
+    newSocket.on("RECEIVE_MESH_PACKET", handleIncomingPacket);
+    newSocket.on("broadcast_payload", handleIncomingPacket);
+    newSocket.on("chat_message", handleIncomingPacket);
 
     // 3. Listen for SOS Alert Trigger
     newSocket.on("SOS_ALERT", (alert: SosAlertData) => {
@@ -144,12 +174,27 @@ const newSocket = io(serverUrl, {
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center gap-3 w-full md:w-auto">
+              {/* Action Buttons & Dynamic QR Code Target */}
+              <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+                <div className="flex items-center gap-3 bg-slate-800/90 border border-slate-700 p-2.5 rounded-2xl shrink-0">
+                  <div className="bg-white p-1.5 rounded-xl shadow-inner">
+                    <QRCodeSVG value={mobileUrl} size={64} />
+                  </div>
+                  <div className="space-y-0.5 text-left">
+                    <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase flex items-center gap-1">
+                      <QrCode className="w-3 h-3 text-emerald-400" />
+                      Scan to Pair Phone Node
+                    </span>
+                    <p className="text-[10px] font-mono text-slate-300 truncate max-w-[180px]">
+                      {mobileUrl}
+                    </p>
+                  </div>
+                </div>
+
                 <a
-                  href="/mobile"
+                  href="./mobile.html"
                   target="_blank"
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-4 py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 active:scale-95 transition-all w-full md:w-auto"
+                  className="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-4 py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 active:scale-95 transition-all w-full md:w-auto shrink-0"
                 >
                   <Smartphone className="w-4 h-4" />
                   <span>Launch Phone Client (/mobile)</span>

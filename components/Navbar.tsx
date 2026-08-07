@@ -105,14 +105,14 @@ export default function Navbar({
             <span>ZK Auth</span>
           </Link>
 
-          <Link
-            href="/mobile"
+          <a
+            href="./mobile.html"
             target="_blank"
             className="hidden sm:flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-md shadow-blue-600/20 transition-all active:scale-95"
           >
             <Smartphone className="w-4 h-4" />
             <span>Open Phone Node</span>
-          </Link>
+          </a>
 
           <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl">
             <span className={`w-2.5 h-2.5 rounded-full ${isConnected ? "bg-emerald-500 animate-ping" : "bg-rose-500"}`} />

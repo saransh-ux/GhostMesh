@@ -1,0 +1,218 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ghostmesh.network/schemas/ghostmesh-schema.json",
+  "title": "GhostMesh Specification Schema",
+  "description": "Complete JSON schema specification for GhostMesh telemetry matrix data model, encrypted packet spec, Socket.io event definitions, and Web Crypto identity structure.",
+  "type": "object",
+  "properties": {
+    "telemetryMatrix": {
+      "$ref": "#/$defs/TelemetryMatrixDataModel"
+    },
+    "encryptedPacket": {
+      "$ref": "#/$defs/EncryptedPacketSpec"
+    },
+    "socketIoEvents": {
+      "$ref": "#/$defs/SocketIoEventDefinitions"
+    },
+    "webCryptoIdentity": {
+      "$ref": "#/$defs/WebCryptoIdentityStructure"
+    }
+  },
+  "required": [
+    "telemetryMatrix",
+    "encryptedPacket",
+    "socketIoEvents",
+    "webCryptoIdentity"
+  ],
+  "$defs": {
+    "TelemetryMatrixDataModel": {
+      "type": "object",
+      "title": "Telemetry Matrix Data Model",
+      "description": "Real-time node telemetry status and performance metrics.",
+      "properties": {
+        "nodeId": {
+          "type": "string",
+          "description": "Unique node identification string."
+        },
+        "batteryLevel": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Node battery percentage level (0-100)."
+        },
+        "rssi": {
+          "type": "number",
+          "description": "Received Signal Strength Indicator in dBm."
+        },
+        "pingMs": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Round-trip latency in milliseconds."
+        },
+        "powerMode": {
+          "type": "string",
+          "enum": [
+            "PERFORMANCE",
+            "ECO_SAVE"
+          ],
+          "description": "Power operation mode of the node."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ONLINE",
+            "OFFLINE"
+          ],
+          "description": "Network connection status of the node."
+        }
+      },
+      "required": [
+        "nodeId",
+        "batteryLevel",
+        "rssi",
+        "pingMs",
+        "powerMode",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "EncryptedPacketSpec": {
+      "type": "object",
+      "title": "Encrypted Packet Spec",
+      "description": "Onion-routed encrypted packet structure for mesh transmission.",
+      "properties": {
+        "packetId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Universally Unique Identifier (UUID v4) for the packet."
+        },
+        "senderNodeId": {
+          "type": "string",
+          "description": "Node ID of origin sender."
+        },
+        "targetNodeId": {
+          "type": "string",
+          "description": "Target recipient node ID or 'ALL' for broadcast network."
+        },
+        "encryptedPayloadHex": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]+$",
+          "description": "Hexadecimal encoded ciphertext string starting with 0x prefix."
+        },
+        "encryptionType": {
+          "type": "string",
+          "enum": [
+            "AES-256-GCM"
+          ],
+          "description": "Symmetric payload encryption algorithm."
+        },
+        "onionRouteTrace": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Array of node IDs representing the multi-hop onion routing trajectory."
+        },
+        "hopCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of mesh intermediate hops."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 formatted UTC timestamp."
+        }
+      },
+      "required": [
+        "packetId",
+        "senderNodeId",
+        "targetNodeId",
+        "encryptedPayloadHex",
+        "encryptionType",
+        "onionRouteTrace",
+        "hopCount",
+        "timestamp"
+      ],
+      "additionalProperties": false
+    },
+    "SocketIoEventDefinitions": {
+      "type": "object",
+      "title": "Socket.io Event Definitions",
+      "description": "Emitted and received event identifiers for real-time WebSocket mesh communication.",
+      "properties": {
+        "emittedEvents": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "REGISTER_NODE",
+              "SEND_MESH_PACKET",
+              "SOS_ALERT",
+              "UPDATE_TELEMETRY"
+            ]
+          },
+          "uniqueItems": true,
+          "description": "Events emitted by client nodes to the mesh central server."
+        },
+        "receivedEvents": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "MESH_NODES_UPDATED",
+              "RECEIVE_MESH_PACKET",
+              "BROADCAST_SOS"
+            ]
+          },
+          "uniqueItems": true,
+          "description": "Events received by client nodes from the mesh central server."
+        }
+      },
+      "required": [
+        "emittedEvents",
+        "receivedEvents"
+      ],
+      "additionalProperties": false
+    },
+    "WebCryptoIdentityStructure": {
+      "type": "object",
+      "title": "Web Crypto Identity Structure",
+      "description": "Cryptographic keypair identity model using browser Web Crypto APIs.",
+      "properties": {
+        "curveType": {
+          "type": "string",
+          "enum": [
+            "Curve25519"
+          ],
+          "description": "Elliptic curve algorithm type."
+        },
+        "seedLength": {
+          "type": "integer",
+          "enum": [
+            12
+          ],
+          "description": "Mnemonic seed phrase word count."
+        },
+        "publicKeyHash": {
+          "type": "string",
+          "description": "Hexadecimal cryptographic hash of the node's public key."
+        },
+        "algorithm": {
+          "type": "string",
+          "enum": [
+            "SubtleCrypto Web API"
+          ],
+          "description": "Web Cryptography API provider engine."
+        }
+      },
+      "required": [
+        "curveType",
+        "seedLength",
+        "publicKeyHash",
+        "algorithm"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -32,22 +32,22 @@ io.on('connection', (socket) => {
   console.log(`[Socket] New connection: ${socket.id}`);
 
   // 1. Node Registration with Zero-Knowledge Public Key & Telemetry
-  socket.on('REGISTER_NODE', (telemetry) => {
-    const nodeId = telemetry.nodeId || `NODE-${socket.id.substring(0, 6).toUpperCase()}`;
+  const handleRegisterNode = (telemetry) => {
+    const nodeId = telemetry?.nodeId || `NODE-${socket.id.substring(0, 6).toUpperCase()}`;
     
     const nodeIndex = activeNodes.findIndex(n => n.nodeId === nodeId || n.socketId === socket.id);
     const nodeData = {
       nodeId,
       socketId: socket.id,
-      publicKey: telemetry.publicKey || `0x${socket.id.substring(0, 16)}`,
-      deviceType: telemetry.deviceType || 'Mobile Handset',
-      platform: telemetry.platform || 'Android/iOS',
-      batteryLevel: telemetry.batteryLevel ?? Math.floor(Math.random() * 25 + 75),
-      rssi: telemetry.rssi ?? -Math.floor(Math.random() * 30 + 40),
-      status: telemetry.status || 'Active Node',
-      powerMode: telemetry.powerMode || 'PERFORMANCE',
+      publicKey: telemetry?.publicKey || `0x${socket.id.substring(0, 16)}`,
+      deviceType: telemetry?.deviceType || telemetry?.userAgent || 'Mobile Handset',
+      platform: telemetry?.platform || 'Android/iOS',
+      batteryLevel: telemetry?.batteryLevel ?? Math.floor(Math.random() * 25 + 75),
+      rssi: telemetry?.rssi ?? -Math.floor(Math.random() * 30 + 40),
+      status: telemetry?.status || 'Active Node',
+      powerMode: telemetry?.powerMode || 'PERFORMANCE',
       lastSeen: new Date().toISOString(),
-      connectedAt: telemetry.connectedAt || new Date().toISOString()
+      connectedAt: telemetry?.connectedAt || new Date().toISOString()
     };
 
     if (nodeIndex >= 0) {
@@ -58,7 +58,11 @@ io.on('connection', (socket) => {
 
     console.log(`[Mesh Core] Node Registered: ${nodeId} (${nodeData.deviceType})`);
     io.emit('MESH_NODES_UPDATED', activeNodes);
-  });
+    io.emit('nodes_updated', activeNodes);
+  };
+
+  socket.on('REGISTER_NODE', handleRegisterNode);
+  socket.on('register_node', handleRegisterNode);
 
   // 2. Real-Time Telemetry & Adaptive Power Mode Updates
   socket.on('UPDATE_TELEMETRY', (update) => {
@@ -77,13 +81,14 @@ io.on('connection', (socket) => {
       }
 
       io.emit('MESH_NODES_UPDATED', activeNodes);
+      io.emit('nodes_updated', activeNodes);
     }
   });
 
   // 3. Multi-Phone & Peer-to-Peer Targeted Packet Routing
-  socket.on('SEND_MESH_PACKET', (data) => {
-    const packetId = `PKT-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
-    const timestamp = new Date().toLocaleTimeString();
+  const handleMeshPacket = (data) => {
+    const packetId = data.id || data.packetId || `PKT-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+    const timestamp = data.timestamp || new Date().toLocaleTimeString();
     
     const sender = activeNodes.find(n => n.socketId === socket.id)?.nodeId || data.senderId || 'Mobile Node';
     const targetNodeId = data.targetNodeId || 'ALL';
@@ -91,10 +96,12 @@ io.on('connection', (socket) => {
 
     const meshPacket = {
       packetId,
+      id: packetId,
       senderId: sender,
       targetNodeId: targetNodeId,
       encryptedPayload: encryptedHex,
-      plainTextPreview: data.plainTextPreview || 'Encrypted mesh payload',
+      plainTextPreview: data.plainTextPreview || data.plainText || 'Encrypted mesh payload',
+      plainText: data.plainText || data.plainTextPreview || 'Encrypted mesh payload',
       timestamp,
       hops: data.hops || Math.floor(Math.random() * 2) + 1,
       ttl: data.ttl || 16,
@@ -109,7 +116,13 @@ io.on('connection', (socket) => {
     
     // Broadcast packet to all connected clients (desktop dashboard and phone nodes)
     io.emit('RECEIVE_MESH_PACKET', meshPacket);
-  });
+    io.emit('broadcast_payload', meshPacket);
+    io.emit('chat_message', meshPacket);
+  };
+
+  socket.on('SEND_MESH_PACKET', handleMeshPacket);
+  socket.on('broadcast_payload', handleMeshPacket);
+  socket.on('chat_message', handleMeshPacket);
 
   // 4. Emergency SOS Trigger
   socket.on('SOS_ALERT', (data) => {
@@ -136,6 +149,7 @@ io.on('connection', (socket) => {
       console.log(`[Mesh Core] Removed: ${disconnected.nodeId}`);
     }
     io.emit('MESH_NODES_UPDATED', activeNodes);
+    io.emit('nodes_updated', activeNodes);
   });
 });
 
