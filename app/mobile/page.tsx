@@ -56,7 +56,19 @@ interface ChatMessage {
 export default function MobileControllerPage() {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [connected, setConnected] = useState(false);
-  const [nodeId, setNodeId] = useState<string>("");
+  const [nodeId, setNodeId] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      const urlId = searchParams.get("nodeId");
+      if (urlId) return urlId;
+      const savedId = localStorage.getItem("ghostmesh_node_id");
+      if (savedId) return savedId;
+      const newId = `NODE-${Math.floor(100000 + Math.random() * 900000)}`;
+      localStorage.setItem("ghostmesh_node_id", newId);
+      return newId;
+    }
+    return `NODE-${Math.floor(100000 + Math.random() * 900000)}`;
+  });
   const [account, setAccount] = useState<ZKAccount | null>(null);
   const [telemetry, setTelemetry] = useState<NodeTelemetry | null>(null);
   const [activeNodesRoster, setActiveNodesRoster] = useState<Array<{ nodeId: string; deviceType: string }>>([]);
@@ -635,7 +647,9 @@ export default function MobileControllerPage() {
     }, 1500);
   };
 
-  const availablePeers = activeNodesRoster.filter((n) => n.nodeId !== nodeId);
+  const availablePeers = Array.from(
+    new Map(activeNodesRoster.filter((n) => n && n.nodeId && n.nodeId !== nodeId).map((n) => [n.nodeId, n])).values()
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between max-w-md mx-auto shadow-2xl font-sans selection:bg-blue-600 selection:text-white border-x border-slate-200">
@@ -661,7 +675,7 @@ export default function MobileControllerPage() {
           <div>
             <h1 className="font-bold text-sm text-slate-900 tracking-tight leading-none">GhostMesh Mobile</h1>
             <p className="text-[10px] font-mono text-slate-500 mt-0.5">
-              {account ? account.alias : "Node Client"} • <span className="text-blue-600 font-bold">{nodeId}</span>
+              Node Client · <span className="text-blue-600 font-bold">{nodeId}</span>
             </p>
           </div>
         </div>
