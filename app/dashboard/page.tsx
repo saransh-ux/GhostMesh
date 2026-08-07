@@ -49,16 +49,16 @@ export default function DashboardPage() {
       }
     }
 
-    const serverUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 
-      (typeof window !== "undefined"
-        ? `${window.location.protocol}//${window.location.hostname}:3001`
-        : "http://localhost:3001");
+    // Connect to deployed Render backend
+const serverUrl =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
-    console.log("[Multi-Device Telemetry Dashboard] Connecting:", serverUrl);
-    const newSocket = io(serverUrl, {
-      transports: ["websocket", "polling"],
-      reconnectionAttempts: 10,
-    });
+console.log("[Multi-Device Telemetry Dashboard] Connecting:", serverUrl);
+
+const newSocket = io(serverUrl, {
+  transports: ["websocket", "polling"],
+  reconnectionAttempts: 10,
+});
 
     setSocket(newSocket);
 

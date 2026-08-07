@@ -74,17 +74,16 @@ export default function MobileControllerPage() {
       setAccount(stored);
     }
 
-    // Auto-detect dynamic server host URL (for Wi-Fi LAN / localtunnel / ngrok)
-    const serverUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 
-      (typeof window !== "undefined" 
-        ? `${window.location.protocol}//${window.location.hostname}:3001` 
-        : "http://localhost:3001");
+    // Connect to Render backend in production, localhost in development
+const serverUrl =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
-    console.log("Connecting Phone Node to relay:", serverUrl);
-    const newSocket = io(serverUrl, {
-      transports: ["websocket", "polling"],
-      reconnectionAttempts: 10,
-    });
+console.log("Connecting Phone Node to relay:", serverUrl);
+
+const newSocket = io(serverUrl, {
+  transports: ["websocket", "polling"],
+  reconnectionAttempts: 10,
+});
 
     socketRef.current = newSocket;
     setSocket(newSocket);
