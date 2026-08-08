@@ -21,7 +21,7 @@
 ##  Key Accomplishments & Features Overview
 
 ### 1.  Decentralized Off-Grid Peer-to-Peer Mesh Architecture
-- **Zero Internet / Zero Cellular Required**: Transmits encrypted payloads across local radio abstractions (Bluetooth Low Energy, Wi-Fi Direct, Multicast UDP).
+- **Zero Internet / Zero Cellular Required**: Transmits encrypted payloads across local radio abstractions (MAC adress hopping, Wi-Fi Direct, Multicast UDP).
 - **Self-Healing Store & Forward**: Intermediary mobile nodes cache encrypted payload blocks until target recipient devices enter proximity range.
 - **Deterministic Mobile Node Pairing**: Dynamic mobile node registration automatically binds unique IDs (`NODE-XXXXXX`) across QR code pairings without ID mismatches.
 
@@ -58,7 +58,7 @@
 | **Frontend Framework** | Next.js 14 (App Router), React 18, TypeScript |
 | **Styling & UI** | Vanilla CSS, TailwindCSS, Lucide Icons, QR Code SVG |
 | **Cryptography** | WebCrypto API (`crypto.subtle`), AES-256-GCM, Ed25519 / ECDSA |
-| **Real-Time Mesh** | Socket.io Client & Server, WebSockets, Bluetooth LE Driver abstraction |
+| **Real-Time Mesh** | Socket.io Client & Server, WebSockets, MAC adress |
 | **Deployment** | Vercel (Frontend), Render (Socket.io Relay Server) |
 
 ---
