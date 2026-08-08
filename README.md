@@ -11,32 +11,32 @@
 
 ## 🚀 Live Deployment Links
 
-- 🖥️ **Live Command Center Dashboard**: [https://ghost-mesh.vercel.app](https://ghost-mesh.vercel.app)
-- 📱 **Mobile Phone Node Controller**: [https://ghost-mesh.vercel.app/mobile](https://ghost-mesh.vercel.app/mobile)
-- 🛡️ **Security Case Review Queue**: [https://ghost-mesh.vercel.app/cases](https://ghost-mesh.vercel.app/cases)
-- 🔑 **Zero-Knowledge Auth Manager**: [https://ghost-mesh.vercel.app/auth](https://ghost-mesh.vercel.app/auth)
+-  **Live Command Center Dashboard**: [https://ghost-mesh.vercel.app](https://ghost-mesh.vercel.app)
+-  **Mobile Phone Node Controller**: [https://ghost-mesh.vercel.app/mobile](https://ghost-mesh.vercel.app/mobile)
+-  **Security Case Review Queue**: [https://ghost-mesh.vercel.app/cases](https://ghost-mesh.vercel.app/cases)
+-  **Zero-Knowledge Auth Manager**: [https://ghost-mesh.vercel.app/auth](https://ghost-mesh.vercel.app/auth)
 
 ---
 
-## 🌟 Key Accomplishments & Features Overview
+##  Key Accomplishments & Features Overview
 
-### 1. 📡 Decentralized Off-Grid Peer-to-Peer Mesh Architecture
+### 1.  Decentralized Off-Grid Peer-to-Peer Mesh Architecture
 - **Zero Internet / Zero Cellular Required**: Transmits encrypted payloads across local radio abstractions (Bluetooth Low Energy, Wi-Fi Direct, Multicast UDP).
 - **Self-Healing Store & Forward**: Intermediary mobile nodes cache encrypted payload blocks until target recipient devices enter proximity range.
 - **Deterministic Mobile Node Pairing**: Dynamic mobile node registration automatically binds unique IDs (`NODE-XXXXXX`) across QR code pairings without ID mismatches.
 
-### 2. 🔐 End-to-End Encryption (E2EE) & Targeted Node Privacy
+### 2.  End-to-End Encryption (E2EE) & Targeted Node Privacy
 - **Signal-Standard Double Ratchet**: Diffie-Hellman ratcheting provides forward and post-compromise secrecy for every message packet.
 - **Targeted Recipient Decryption**: Packets sent between Node A and Node B are readable **only** on the target recipient device. Intermediate network relays and logs see cipher placeholders (`[E2E Encrypted Payload: 0x...]`).
 
-### 3. 🔑 Zero-Knowledge (ZK) Authentication
+### 3.  Zero-Knowledge (ZK) Authentication
 - **Seed Phrase Cryptographic Identity**: Uses WebCrypto `SubtleCrypto` (Ed25519 / ECDSA) to generate local keypairs from a 12-word seed phrase.
 - **Zero Passwords / Zero Central Servers**: Nodes authenticate network interactions via digital signatures without exposing private keys or seed phrases over the wire.
 
-### 4. 🎯 Centered Mesh Topology Visualizer
+### 4.  Centered Mesh Topology Visualizer
 - **Responsive Concentric Signal Matrix**: Symmetrically places satellite mobile nodes around the central `GATEWAY-01` desktop node with real-time radial signal strength meters (`rssi dBm`).
 
-### 5. 🛡️ Security Case Review Queue (Core, Elite & Advanced Bounties)
+### 5.  Security Case Review Queue (Core, Elite & Advanced Bounties)
 - **Core Bounty (Investigation Labels & Notes)**:
   - Interactive status dropdown with distinct visual badges: `UNREVIEWED` (Gray), `SUSPECTED` (Yellow), `VERIFIED` (Red), and `NEEDS_REVIEW` (Blue).
   - Free-text `Investigator Audit Notes` text area to record forensic logs.
@@ -51,7 +51,7 @@
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 | Layer | Technologies Used |
 | :--- | :--- |
@@ -63,7 +63,7 @@
 
 ---
 
-## 💻 Local Development Setup
+##  Local Development Setup
 
 ### 1. Clone Repository
 ```bash
@@ -90,7 +90,7 @@ Relay server runs on `http://localhost:3001`.
 
 ---
 
-## 🧪 Production Build Check
+##  Production Build Check
 To compile and test production build optimization:
 ```bash
 npm run build
@@ -98,7 +98,6 @@ npm run build
 
 ---
 
-## 📄 License
-Distributed under the MIT License. See `LICENSE` for details.
+
 
 *Built for extreme off-grid resilience and zero-trust communications.*
