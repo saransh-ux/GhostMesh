@@ -475,7 +475,7 @@ export default function MobileControllerPage() {
         targetNodeId: selectedTarget,
         encryptedPayload: hexPayload,
         plainTextPreview: isBroadcast ? message : `[E2E Encrypted Payload: ${hexPayload.substring(0, 16)}...]`,
-        plainText: isBroadcast ? message : `[E2E Encrypted Payload: ${hexPayload.substring(0, 16)}...]`,
+        plainText: message,
         timestamp: newMsg.timestamp,
         hops: 1,
         ttl: 16,
