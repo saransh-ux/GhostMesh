@@ -586,9 +586,9 @@ export default function MobileControllerPage() {
     setSosActive(true);
     setTimeout(() => setSosActive(false), 5000);
 
-    // Relay via Socket.io ONLY IF NOT RUNNING IN CAPACITOR CONTAINER
-    if (!isCapacitorNative && socketRef.current && socketRef.current.connected) {
-      socketRef.current.emit("SOS_ALERT", {
+    // Relay via Socket.io to all connected mesh clients
+    if (socketRef.current && socketRef.current.connected) {
+      const sosPayload = {
         id: sosMsg.id,
         packetId: sosMsg.id,
         alertId: sosMsg.id,
@@ -602,7 +602,12 @@ export default function MobileControllerPage() {
         isSos: true,
         priority: "CRITICAL",
         coords: { lat: 37.7749 + (Math.random() - 0.5) * 0.01, lng: -122.4194 + (Math.random() - 0.5) * 0.01 },
-      });
+      };
+
+      socketRef.current.emit("SOS_ALERT", sosPayload);
+      socketRef.current.emit("SEND_MESH_PACKET", sosPayload);
+      socketRef.current.emit("broadcast_payload", sosPayload);
+      socketRef.current.emit("chat_message", sosPayload);
     }
 
     if (isCapacitorNative) {
@@ -886,33 +891,6 @@ export default function MobileControllerPage() {
               <Send className="w-4 h-4" />
             </button>
           </form>
-
-          {/* Interactive Bluetooth Node Scan & Discovery Button */}
-          <div className="pt-1">
-            <button
-              type="button"
-              onClick={handleScanNodes}
-              disabled={isScanning}
-              className={`w-full py-3.5 px-4 rounded-xl text-xs font-semibold font-mono flex items-center justify-center gap-2 border transition-all active:scale-[0.98] ${
-                isScanning
-                  ? "bg-blue-600 text-white border-blue-500 animate-pulse shadow-lg shadow-blue-600/30"
-                  : bluetoothConnected || isCapacitorNative
-                  ? "bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300 shadow-sm"
-                  : "bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/20"
-              }`}
-            >
-              <Bluetooth className={`w-4 h-4 ${isScanning ? "animate-spin text-white" : bluetoothConnected || isCapacitorNative ? "animate-pulse text-emerald-600" : ""}`} />
-              <span>
-                {isScanning
-                  ? "Scanning for Nearby Mesh Nodes (10s)..."
-                  : isCapacitorNative
-                  ? `Scan & Discover Nearby BLE Nodes (${activeNodesRoster.length} Discovered)`
-                  : bluetoothConnected
-                  ? `BLE Direct Connected (${bluetoothDevice?.name || "Target Device"})`
-                  : "Pair Device via Web Bluetooth"}
-              </span>
-            </button>
-          </div>
         </section>
 
         {/* SOS Emergency Trigger */}
