@@ -39,7 +39,7 @@ export default function HeroLanding({ onOpenLiveDemo }: HeroLandingProps) {
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
               Decentralized Mesh Comms.<br />
-              <span className="text-blue-600">Zero Internet Required.</span>
+              <span className="text-blue-600">Off-Grid Peer-to-Peer Network.</span>
             </h1>
 
             <p className="text-base sm:text-lg text-slate-600 max-w-xl leading-relaxed">
@@ -81,36 +81,83 @@ export default function HeroLanding({ onOpenLiveDemo }: HeroLandingProps) {
             </div>
           </div>
 
-          {/* Dynamic Interactive Phone Visualizer with Floating Badges */}
+          {/* Pure Code Cybernetic Mesh Visualizer (Replaces Phone Mockup Image Entirely) */}
           <div className="lg:col-span-6 relative z-10 flex justify-center lg:justify-end">
-            <div className="relative">
-              {/* Background Signal Pulse Rings */}
-              <div className="absolute -inset-4 rounded-full bg-blue-500/10 blur-3xl animate-pulse -z-10" />
-              
-              {/* Floating Badge 1 - Top Left */}
-              <div className="absolute -top-6 -left-8 z-30 bg-white/95 backdrop-blur-md border border-slate-200 px-3.5 py-2 rounded-2xl shadow-xl flex items-center gap-2 animate-bounce [animation-duration:4s]">
-                <div className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                  <ShieldCheck className="w-3.5 h-3.5" />
+            <div className="relative w-full max-w-lg">
+              {/* Background Glow */}
+              <div className="absolute -inset-4 rounded-3xl bg-blue-600/15 blur-3xl animate-pulse -z-10" />
+
+              {/* Dynamic Cybernetic Mesh Visualizer Box */}
+              <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl space-y-5">
+                {/* Header Bar */}
+                <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
+                      <Radio className="w-4 h-4 animate-pulse" />
+                    </div>
+                    <div>
+                      <h3 className="text-xs font-mono font-bold text-white flex items-center gap-2">
+                        GhostMesh Signal Matrix
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                      </h3>
+                      <p className="text-[10px] font-mono text-slate-400">P2P Peer Discovery Engine</p>
+                    </div>
+                  </div>
+
+                  <span className="text-[10px] font-mono bg-blue-500/20 text-blue-400 px-2.5 py-1 rounded-full border border-blue-500/30 font-bold">
+                    3 ACTIVE NODES
+                  </span>
                 </div>
-                <div>
-                  <span className="text-[10px] font-mono font-bold text-slate-900 block">E2E ENCRYPTED</span>
-                  <span className="text-[9px] font-mono text-slate-500">Signal Double Ratchet</span>
+
+                {/* Animated Radial Radar Visualizer */}
+                <div className="relative h-60 bg-slate-950/80 rounded-2xl border border-slate-800 flex items-center justify-center overflow-hidden">
+                  <svg className="absolute inset-0 w-full h-full opacity-15" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <pattern id="radar-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+                        <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#64748b" strokeWidth="0.5" />
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#radar-grid)" />
+                  </svg>
+
+                  {/* Concentric Rings */}
+                  <div className="absolute w-48 h-48 rounded-full border border-slate-800 border-dashed animate-[spin_20s_linear_infinite]" />
+                  <div className="absolute w-32 h-32 rounded-full border border-blue-500/20 border-dashed animate-[spin_12s_linear_infinite_reverse]" />
+
+                  {/* Central Gateway */}
+                  <div className="relative z-20 flex flex-col items-center">
+                    <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-600/50 mb-1">
+                      <Radio className="w-5 h-5 animate-pulse" />
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-white">GATEWAY-01</span>
+                  </div>
+
+                  {/* Satellite Node 1 - Top Right */}
+                  <div className="absolute top-6 right-10 flex flex-col items-center animate-bounce [animation-duration:3s]">
+                    <div className="w-9 h-9 rounded-xl bg-cyan-950 border border-cyan-400 text-cyan-400 flex items-center justify-center shadow-md shadow-cyan-500/30">
+                      <Smartphone className="w-4 h-4" />
+                    </div>
+                    <span className="text-[9px] font-mono text-cyan-300 font-bold mt-0.5">NODE-944621</span>
+                  </div>
+
+                  {/* Satellite Node 2 - Bottom Left */}
+                  <div className="absolute bottom-6 left-10 flex flex-col items-center animate-bounce [animation-duration:4s]">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-950 border border-emerald-400 text-emerald-400 flex items-center justify-center shadow-md shadow-emerald-500/30">
+                      <Smartphone className="w-4 h-4" />
+                    </div>
+                    <span className="text-[9px] font-mono text-emerald-300 font-bold mt-0.5">NODE-243148</span>
+                  </div>
+                </div>
+
+                {/* Status Bar */}
+                <div className="bg-slate-950 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between text-[11px] font-mono">
+                  <div className="flex items-center gap-2 text-slate-300">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Encryption: <strong className="text-white">AES-256-GCM</strong></span>
+                  </div>
+                  <span className="text-emerald-400 font-bold">100% HEALTHY</span>
                 </div>
               </div>
-
-              {/* Floating Badge 2 - Bottom Right */}
-              <div className="absolute -bottom-4 -right-6 z-30 bg-slate-900/95 backdrop-blur-md border border-slate-800 text-white px-3.5 py-2 rounded-2xl shadow-2xl flex items-center gap-2 animate-bounce [animation-duration:5s]">
-                <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center">
-                  <Zap className="w-3.5 h-3.5 animate-pulse" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono font-bold text-blue-400 block">0 CELLULAR NEEDED</span>
-                  <span className="text-[9px] font-mono text-slate-300">Pure Peer-to-Peer BLE</span>
-                </div>
-              </div>
-
-              {/* Main Phone Mockup */}
-              <PhoneMockup />
             </div>
           </div>
         </div>
