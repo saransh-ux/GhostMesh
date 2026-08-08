@@ -169,7 +169,7 @@ export default function MobileControllerPage() {
       const handleIncomingMessage = (msgData: any) => {
         if (!msgData) return;
         const msgTarget = msgData.targetNodeId || "ALL";
-        const msgSender = msgData.senderId || "Peer Node";
+        const msgSender = msgData.senderId || msgData.nodeId || "Peer Node";
         const activeId = currentId;
 
         // Enforce strict Targeted Node Filtering:
@@ -179,9 +179,9 @@ export default function MobileControllerPage() {
           return;
         }
 
-        const packetId = msgData.id || msgData.packetId || `MSG-${Date.now()}`;
+        const packetId = msgData.id || msgData.packetId || msgData.alertId || `MSG-${Date.now()}`;
         const isSelf = msgSender === activeId;
-        const displayMsg = msgData.plainText || msgData.plainTextPreview || `[E2E Encrypted Payload: ${(msgData.encryptedPayload || "0x00").substring(0, 16)}...]`;
+        const displayMsg = msgData.plainText || msgData.plainTextPreview || msgData.message || `[E2E Encrypted Payload: ${(msgData.encryptedPayload || "0x00").substring(0, 16)}...]`;
 
         setChatMessages((prev) => {
           if (prev.some((m) => m.id === packetId)) return prev;
