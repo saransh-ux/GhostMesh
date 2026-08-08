@@ -128,18 +128,31 @@ io.on('connection', (socket) => {
 
   // 4. Emergency SOS Trigger
   socket.on('SOS_ALERT', (data) => {
-    const sender = activeNodes.find(n => n.socketId === socket.id)?.nodeId || data?.nodeId || 'Mobile Node';
+    const sender = activeNodes.find(n => n.socketId === socket.id)?.nodeId || data?.nodeId || data?.senderId || 'Mobile Node';
+    const sosMessageText = data?.message || data?.plainText || `EMERGENCY SOS ALERT: Operator distress beacon activated from Node ${sender}!`;
+    
     const sosPayload = {
+      packetId: `SOS-${Date.now()}`,
+      id: `SOS-${Date.now()}`,
       alertId: `SOS-${Date.now()}`,
+      senderId: sender,
       nodeId: sender,
-      message: data?.message || 'EMERGENCY SOS: Physical Node requested emergency response!',
+      targetNodeId: 'ALL',
+      message: sosMessageText,
+      plainText: sosMessageText,
+      plainTextPreview: sosMessageText,
+      encryptedPayload: data?.encryptedPayload || `0xSOS${Date.now().toString(16)}`,
       timestamp: new Date().toLocaleTimeString(),
-      coords: data?.coords || { lat: 37.7749, lng: -122.4194 },
-      priority: 'CRITICAL'
+      isSos: true,
+      priority: 'CRITICAL',
+      coords: data?.coords || { lat: 37.7749, lng: -122.4194 }
     };
 
     console.warn(`[EMERGENCY SOS] Alert from ${sender}`);
     io.emit('SOS_ALERT', sosPayload);
+    io.emit('RECEIVE_MESH_PACKET', sosPayload);
+    io.emit('broadcast_payload', sosPayload);
+    io.emit('chat_message', sosPayload);
   });
 
   // 5. Disconnection

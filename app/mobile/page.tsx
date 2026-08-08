@@ -200,6 +200,7 @@ export default function MobileControllerPage() {
       newSocket.on("chat_message", handleIncomingMessage);
       newSocket.on("broadcast_payload", handleIncomingMessage);
       newSocket.on("RECEIVE_MESH_PACKET", handleIncomingMessage);
+      newSocket.on("SOS_ALERT", handleIncomingMessage);
 
     } catch (e) {
       console.warn("[GhostMesh WebSocket Error]:", e);
@@ -580,7 +581,14 @@ export default function MobileControllerPage() {
     if (!isCapacitorNative && socketRef.current && socketRef.current.connected) {
       socketRef.current.emit("SOS_ALERT", {
         nodeId,
+        senderId: nodeId,
+        targetNodeId: "ALL",
         message: sosMsg.plainText,
+        plainText: sosMsg.plainText,
+        plainTextPreview: sosMsg.plainText,
+        encryptedPayload: sosMsg.encryptedPayload,
+        isSos: true,
+        priority: "CRITICAL",
         coords: { lat: 37.7749 + (Math.random() - 0.5) * 0.01, lng: -122.4194 + (Math.random() - 0.5) * 0.01 },
       });
     }
