@@ -40,12 +40,15 @@ export default function DashboardPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const hostname = window.location.hostname;
-      const port = window.location.port || "3000";
-      // Use exact LAN IP if on localhost/127.0.0.1, or dynamic origin
-      if (hostname === "localhost" || hostname === "127.0.0.1") {
+      const host = window.location.host;
+      const port = window.location.port ? `:${window.location.port}` : "";
+      if (host.includes("-git-") && host.includes(".vercel.app")) {
+        const baseName = host.split("-git-")[0];
+        setLocalIpUrl(`https://${baseName}.vercel.app/mobile`);
+      } else if (hostname === "localhost" || hostname === "127.0.0.1") {
         setLocalIpUrl("http://172.22.210.170:3000/mobile");
       } else {
-        setLocalIpUrl(`http://${hostname}:${port}/mobile`);
+        setLocalIpUrl(`http://${hostname}${port}/mobile`);
       }
     }
 

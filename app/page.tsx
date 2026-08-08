@@ -46,15 +46,29 @@ export default function Home() {
   const [sosAlert, setSosAlert] = useState<SosAlertData | null>(null);
   const [lastSender, setLastSender] = useState<string | undefined>(undefined);
   const [manualMessage, setManualMessage] = useState("");
-  const [originUrl, setOriginUrl] = useState<string>("");
-
   const nodeId = "GATEWAY-01";
-  const mobileUrl = `${originUrl || (typeof window !== "undefined" ? window.location.origin : "")}/mobile`;
+  
+  const getPublicMobileUrl = () => {
+    if (process.env.NEXT_PUBLIC_SITE_URL) {
+      return `${process.env.NEXT_PUBLIC_SITE_URL}/mobile`;
+    }
+    if (typeof window !== "undefined") {
+      const host = window.location.host;
+      const origin = window.location.origin;
+      // Convert Vercel branch preview URLs (-git-main-*) to public production Vercel URL
+      if (host.includes("-git-") && host.includes(".vercel.app")) {
+        const baseName = host.split("-git-")[0];
+        return `https://${baseName}.vercel.app/mobile`;
+      }
+      return `${origin}/mobile`;
+    }
+    return "/mobile";
+  };
+
+  const mobileUrl = getPublicMobileUrl();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setOriginUrl(window.location.origin);
-
       const searchParams = new URLSearchParams(window.location.search);
       const queryNodeId = searchParams.get("nodeId");
       const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
