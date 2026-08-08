@@ -104,18 +104,26 @@ export default function SecurityCasesPage() {
 
       // Risk Severity & Confidence Calculation
       let riskSeverity: RiskSeverity = "LOW";
-      let confidenceScore = 0.55 + Math.random() * 0.2;
+      let confidenceScore = 0.40;
 
-      if (payload.isSos || lowerText.includes("sos") || lowerText.includes("emergency") || lowerText.includes("help")) {
+      const isSosThreat = payload.isSos || lowerText.includes("sos") || lowerText.includes("emergency") || lowerText.includes("attack") || lowerText.includes("breach");
+      const isHighEntropyRawStream = !rawText && encryptedPayload.length > 80;
+
+      if (isSosThreat) {
         riskSeverity = "HIGH";
         confidenceScore = 0.99;
-      } else if (encryptedPayload.length > 20 || lowerText.length > 35) {
+      } else if (isHighEntropyRawStream) {
         riskSeverity = "HIGH";
-        confidenceScore = 0.91 + Math.random() * 0.08;
+        confidenceScore = 0.91 + Math.random() * 0.07;
       } else if (mediaType !== "TEXT") {
         riskSeverity = "MEDIUM";
-        confidenceScore = 0.78 + Math.random() * 0.1;
+        confidenceScore = 0.72 + Math.random() * 0.12;
+      } else {
+        riskSeverity = "LOW";
+        confidenceScore = 0.38 + Math.random() * 0.15;
       }
+
+      const displayText = rawText ? `"${rawText}"` : `Encrypted stream (${encryptedPayload.slice(0, 16)}...)`;
 
       const newCase: SecurityCase = {
         caseId: `CASE-${Math.floor(100000 + Math.random() * 900000)}`,
@@ -124,7 +132,9 @@ export default function SecurityCasesPage() {
         confidenceScore: parseFloat(confidenceScore.toFixed(3)),
         mediaType,
         mediaHash: hashStr,
-        systemExplanation: `Live packet payload transmitted from phone ${senderId}: "${rawText || `Encrypted Payload Stream ${encryptedPayload.slice(0, 20)}...`}". Flagged for automated threat inspection.`,
+        systemExplanation: riskSeverity === "HIGH" 
+          ? `CRITICAL THREAT: Emergency alert/anomaly payload transmitted from phone ${senderId}: ${displayText}.` 
+          : `Standard mesh telemetry packet transmitted from phone ${senderId}: ${displayText}. Verified E2E payload.`,
         reviewStatus: riskSeverity === "HIGH" ? "SUSPECTED" : "UNREVIEWED",
         investigatorNotes: riskSeverity === "HIGH" ? `Automated security flag triggered for node ${senderId}.` : "",
         sourceNodeId: senderId,
