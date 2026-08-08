@@ -37,7 +37,7 @@ export default function Home() {
   const [originUrl, setOriginUrl] = useState<string>("");
 
   const nodeId = "GATEWAY-01";
-  const mobileUrl = `${originUrl || (typeof window !== "undefined" ? window.location.origin : "")}/mobile?nodeId=${nodeId}`;
+  const mobileUrl = `${originUrl || (typeof window !== "undefined" ? window.location.origin : "")}/mobile`;
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -52,10 +52,12 @@ export default function Home() {
         window.location.protocol === "capacitor:" ||
         navigator.userAgent.includes("Capacitor");
 
-      if (queryNodeId || isMobileUA || isCapacitor) {
-        console.log("[GhostMesh] Mobile environment or nodeId query detected. Redirecting to /mobile.");
-        const targetNodeId = queryNodeId || nodeId;
-        window.location.replace(`${window.location.origin}/mobile?nodeId=${targetNodeId}`);
+      if (isMobileUA || isCapacitor || (queryNodeId && queryNodeId.toUpperCase() !== "GATEWAY-01")) {
+        console.log("[GhostMesh] Mobile environment detected. Redirecting to /mobile.");
+        const targetUrl = (queryNodeId && queryNodeId.toUpperCase() !== "GATEWAY-01")
+          ? `${window.location.origin}/mobile?nodeId=${queryNodeId}`
+          : `${window.location.origin}/mobile`;
+        window.location.replace(targetUrl);
         return;
       }
     }

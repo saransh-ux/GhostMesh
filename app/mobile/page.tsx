@@ -53,22 +53,35 @@ interface ChatMessage {
   isSelf: boolean;
 }
 
+function getMobileNodeId(): string {
+  if (typeof window !== "undefined") {
+    const searchParams = new URLSearchParams(window.location.search);
+    const urlId = searchParams.get("nodeId");
+    if (urlId && urlId.trim() && urlId.trim().toUpperCase() !== "GATEWAY-01") {
+      return urlId.trim();
+    }
+
+    const stored = getStoredAccount();
+    if (stored?.nodeId) {
+      return stored.nodeId;
+    }
+
+    const savedId = localStorage.getItem("ghostmesh_node_id");
+    if (savedId && savedId.trim() && savedId.trim().toUpperCase() !== "GATEWAY-01") {
+      return savedId.trim();
+    }
+
+    const newId = `NODE-${Math.floor(100000 + Math.random() * 900000)}`;
+    localStorage.setItem("ghostmesh_node_id", newId);
+    return newId;
+  }
+  return "NODE-MOBILE";
+}
+
 export default function MobileControllerPage() {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [connected, setConnected] = useState(false);
-  const [nodeId, setNodeId] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      const searchParams = new URLSearchParams(window.location.search);
-      const urlId = searchParams.get("nodeId");
-      if (urlId) return urlId;
-      const savedId = localStorage.getItem("ghostmesh_node_id");
-      if (savedId) return savedId;
-      const newId = `NODE-${Math.floor(100000 + Math.random() * 900000)}`;
-      localStorage.setItem("ghostmesh_node_id", newId);
-      return newId;
-    }
-    return `NODE-${Math.floor(100000 + Math.random() * 900000)}`;
-  });
+  const [nodeId, setNodeId] = useState<string>(() => getMobileNodeId());
   const [account, setAccount] = useState<ZKAccount | null>(null);
   const [telemetry, setTelemetry] = useState<NodeTelemetry | null>(null);
   const [activeNodesRoster, setActiveNodesRoster] = useState<Array<{ nodeId: string; deviceType: string }>>([]);
@@ -95,12 +108,13 @@ export default function MobileControllerPage() {
 
   const socketRef = useRef<Socket | null>(null);
 
-  const connectToWebSocketServer = (targetUrl: string) => {
+  const connectToWebSocketServer = (targetUrl: string, activeNodeId?: string) => {
     try {
+      const currentId = activeNodeId || nodeId || getMobileNodeId();
       if (socketRef.current) {
         socketRef.current.disconnect();
       }
-      console.log("[GhostMesh WebSocket] Connecting to gateway:", targetUrl);
+      console.log("[GhostMesh WebSocket] Connecting to gateway:", targetUrl, "as node:", currentId);
       const newSocket = io(targetUrl, {
         transports: ["websocket", "polling"],
         reconnectionAttempts: 5,
@@ -116,7 +130,7 @@ export default function MobileControllerPage() {
         setTimeout(() => setBluetoothToast(null), 3500);
 
         const registerPayload = {
-          nodeId: nodeId || `NODE-${Math.floor(100000 + Math.random() * 900000)}`,
+          nodeId: currentId,
           deviceType: "Mobile Handset",
           userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "Mobile Browser",
           platform: "Mobile Client",
@@ -187,8 +201,8 @@ export default function MobileControllerPage() {
       });
 
       newSocket.on("RECEIVE_MESH_PACKET", (pkt: any) => {
-        if (pkt.targetNodeId === "ALL" || pkt.targetNodeId === nodeId || pkt.senderId === nodeId) {
-          const isSelf = pkt.senderId === nodeId;
+        if (pkt.targetNodeId === "ALL" || pkt.targetNodeId === activeNodeId || pkt.senderId === activeNodeId) {
+          const isSelf = pkt.senderId === activeNodeId;
           const newMsg: ChatMessage = {
             id: pkt.packetId || Math.random().toString(),
             senderId: pkt.senderId,
@@ -234,16 +248,10 @@ export default function MobileControllerPage() {
     const isAndroid = /Android/i.test(ua);
     const platformName = isCap ? "Capacitor Android Native" : isIOS ? "Apple iOS" : isAndroid ? "Android Handset" : "Mobile Phone";
 
-    let urlNodeId: string | null = null;
-    if (typeof window !== "undefined") {
-      const searchParams = new URLSearchParams(window.location.search);
-      urlNodeId = searchParams.get("nodeId");
-    }
-
-    const generatedNodeId = urlNodeId || (stored ? stored.nodeId : `NODE-${Math.floor(100000 + Math.random() * 900000)}`);
+    const activeNodeId = getMobileNodeId();
 
     const initialTelemetry: NodeTelemetry = {
-      nodeId: generatedNodeId,
+      nodeId: activeNodeId,
       deviceType: platformName,
       platform: platformName,
       batteryLevel: Math.floor(Math.random() * 20 + 80),
@@ -252,23 +260,23 @@ export default function MobileControllerPage() {
       powerMode: "PERFORMANCE",
     };
 
-    setNodeId(generatedNodeId);
+    setNodeId(activeNodeId);
     setTelemetry(initialTelemetry);
 
     // Initialize Production WebSocket server connecting directly to window.location.origin
     const primaryServer =
       process.env.NEXT_PUBLIC_API_URL ||
       (typeof window !== "undefined" && window.location.origin ? window.location.origin : "http://localhost:3001");
-    connectToWebSocketServer(primaryServer);
+    connectToWebSocketServer(primaryServer, activeNodeId);
 
     // Initialize Native Android GhostMeshBLE Java Plugin
     if (isCap) {
-      GhostMeshBLE.startMesh({ nodeId: generatedNodeId })
+      GhostMeshBLE.startMesh({ nodeId: activeNodeId })
         .then((res: any) => {
           console.log("[GhostMesh Native BLE] Mesh started successfully:", res);
           setBluetoothConnected(true);
           setBluetoothStatus("NATIVE_BLE_ADVERTISING");
-          setBluetoothToast(`Native Android BLE Advertising Active as ${generatedNodeId}`);
+          setBluetoothToast(`Native Android BLE Advertising Active as ${activeNodeId}`);
           setTimeout(() => setBluetoothToast(null), 3500);
         })
         .catch((err: any) => {
@@ -313,7 +321,13 @@ export default function MobileControllerPage() {
       GhostMeshBLE.startScan().catch(console.warn);
     }
 
-    // Telemetry ticker loop (throttled if ecoMode is active)
+    return () => {
+      if (socketRef.current) socketRef.current.disconnect();
+    };
+  }, []);
+
+  // Telemetry ticker loop (throttled if ecoMode is active)
+  useEffect(() => {
     const intervalTime = ecoMode ? 10000 : 4000;
     const interval = setInterval(() => {
       setTelemetry((prev) => {
@@ -327,7 +341,7 @@ export default function MobileControllerPage() {
           ...prev,
           rssi: -Math.floor(Math.random() * 20 + 45),
           batteryLevel: Math.round(newBatt),
-          status: bluetoothConnected || isCap ? "BLE_DIRECT_CONNECTED" : prev.status,
+          status: bluetoothConnected || isCapacitorNative ? "BLE_DIRECT_CONNECTED" : prev.status,
           powerMode: (isLowBatt || ecoMode ? "ECO_SAVE" : "PERFORMANCE") as any,
         };
         if (socketRef.current && socketRef.current.connected) {
@@ -338,11 +352,8 @@ export default function MobileControllerPage() {
       setPing(Math.floor(Math.random() * 8 + 10));
     }, intervalTime);
 
-    return () => {
-      clearInterval(interval);
-      if (socketRef.current) socketRef.current.disconnect();
-    };
-  }, [ecoMode]);
+    return () => clearInterval(interval);
+  }, [ecoMode, bluetoothConnected, isCapacitorNative]);
 
   // Active Interactive Bluetooth Node Scanning & Discovery Handler
   const handleScanNodes = async () => {
