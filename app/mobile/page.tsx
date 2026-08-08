@@ -573,13 +573,19 @@ export default function MobileControllerPage() {
     const textEncoder = new TextEncoder();
     const encodedBytes = Array.from(textEncoder.encode(payloadString));
 
-    setChatMessages((prev) => [...prev, sosMsg]);
+    setChatMessages((prev) => {
+      if (prev.some((m) => m.id === sosMsg.id)) return prev;
+      return [...prev, sosMsg];
+    });
     setSosActive(true);
     setTimeout(() => setSosActive(false), 5000);
 
     // Relay via Socket.io ONLY IF NOT RUNNING IN CAPACITOR CONTAINER
     if (!isCapacitorNative && socketRef.current && socketRef.current.connected) {
       socketRef.current.emit("SOS_ALERT", {
+        id: sosMsg.id,
+        packetId: sosMsg.id,
+        alertId: sosMsg.id,
         nodeId,
         senderId: nodeId,
         targetNodeId: "ALL",

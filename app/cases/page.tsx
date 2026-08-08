@@ -44,6 +44,7 @@ export default function SecurityCasesPage() {
   const [cases, setCases] = useState<SecurityCase[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [activeMeshNodes, setActiveMeshNodes] = useState<string[]>(["GATEWAY-01"]);
+  const processedPacketIdsRef = React.useRef<Set<string>>(new Set());
   
   // Filter States
   const [severityFilter, setSeverityFilter] = useState<string>("ALL");
@@ -84,10 +85,22 @@ export default function SecurityCasesPage() {
 
     // Handle Incoming Live Mesh Packet Events
     const handleIncomingMeshPacket = (payload: any) => {
+      if (!payload) return;
       console.log("[Cases Queue] Real-time mesh packet ingested:", payload);
 
       const senderId = payload.senderId || payload.msgSender || payload.nodeId || "GATEWAY-01";
       const rawText = payload.plainTextPreview || payload.plainText || payload.text || payload.message || "";
+      const packetId = payload.id || payload.packetId || payload.alertId || `${senderId}-${rawText.slice(0, 15)}`;
+
+      // Deduplication: Ignore if this exact packet was already ingested in the last 10 seconds
+      if (processedPacketIdsRef.current.has(packetId)) {
+        console.log("[Cases Queue] Deduplicating socket event for packet ID:", packetId);
+        return;
+      }
+      processedPacketIdsRef.current.add(packetId);
+      setTimeout(() => {
+        processedPacketIdsRef.current.delete(packetId);
+      }, 10000);
       const encryptedPayload = payload.encryptedPayload || payload.cipherText || `0xSOS${Date.now().toString(16)}`;
 
       // Generate SHA-256 hash representation from payload
