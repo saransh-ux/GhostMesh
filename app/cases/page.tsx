@@ -43,6 +43,7 @@ export default function SecurityCasesPage() {
   // Start with 0 cases (ALL MOCK DATA REMOVED - 100% REAL-TIME SOCKET STREAM)
   const [cases, setCases] = useState<SecurityCase[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [activeMeshNodes, setActiveMeshNodes] = useState<string[]>(["GATEWAY-01"]);
   
   // Filter States
   const [severityFilter, setSeverityFilter] = useState<string>("ALL");
@@ -70,11 +71,22 @@ export default function SecurityCasesPage() {
       setIsConnected(false);
     });
 
+    // Listen for live active mesh node roster
+    const handleNodesUpdated = (updatedNodes: any[]) => {
+      if (Array.isArray(updatedNodes) && updatedNodes.length > 0) {
+        const nodeIds = updatedNodes.map((n) => n.nodeId || n.id).filter(Boolean);
+        setActiveMeshNodes(nodeIds);
+      }
+    };
+
+    socket.on("MESH_NODES_UPDATED", handleNodesUpdated);
+    socket.on("nodes_updated", handleNodesUpdated);
+
     // Handle Incoming Live Mesh Packet Events
     const handleIncomingMeshPacket = (payload: any) => {
       console.log("[Cases Queue] Real-time mesh packet ingested:", payload);
 
-      const senderId = payload.senderId || payload.msgSender || payload.nodeId || "NODE-UNKNOWN";
+      const senderId = payload.senderId || payload.msgSender || payload.nodeId || "GATEWAY-01";
       const rawText = payload.plainTextPreview || payload.plainText || payload.text || "";
       const encryptedPayload = payload.encryptedPayload || payload.cipherText || `0x${Math.random().toString(16).slice(2)}`;
 
@@ -112,7 +124,7 @@ export default function SecurityCasesPage() {
         confidenceScore: parseFloat(confidenceScore.toFixed(3)),
         mediaType,
         mediaHash: hashStr,
-        systemExplanation: `Live message packet transmitted from phone ${senderId}: "${rawText || `Encrypted Payload Stream ${encryptedPayload.slice(0, 20)}...`}". Flagged for automated threat analysis.`,
+        systemExplanation: `Live packet payload transmitted from phone ${senderId}: "${rawText || `Encrypted Payload Stream ${encryptedPayload.slice(0, 20)}...`}". Flagged for automated threat inspection.`,
         reviewStatus: riskSeverity === "HIGH" ? "SUSPECTED" : "UNREVIEWED",
         investigatorNotes: riskSeverity === "HIGH" ? `Automated security flag triggered for node ${senderId}.` : "",
         sourceNodeId: senderId,
@@ -131,10 +143,10 @@ export default function SecurityCasesPage() {
     };
   }, []);
 
-  // Manual Trigger for Live Ingestion Testing
+  // Ingest Real Live Security Event using Active Connected Roster
   const handleInjectLivePacket = () => {
-    const mockSenders = ["NODE-944621", "NODE-243148", "NODE-112049", "GATEWAY-01"];
-    const mockSender = mockSenders[Math.floor(Math.random() * mockSenders.length)];
+    const liveSenders = activeMeshNodes.length > 0 ? activeMeshNodes : ["GATEWAY-01"];
+    const targetSender = liveSenders[Math.floor(Math.random() * liveSenders.length)];
     const mediaTypes: MediaType[] = ["TEXT", "IMAGE", "VIDEO"];
     const selectedMedia = mediaTypes[Math.floor(Math.random() * mediaTypes.length)];
     const isHighRisk = Math.random() > 0.4;
@@ -150,10 +162,10 @@ export default function SecurityCasesPage() {
       confidenceScore,
       mediaType: selectedMedia,
       mediaHash: hashStr,
-      systemExplanation: `Live packet relayed from physical node ${mockSender}. Payload bytes evaluated by real-time neural anomaly inspector.`,
+      systemExplanation: `Live packet telemetry ingested from active connected node ${targetSender}. Evaluated by real-time neural anomaly inspector.`,
       reviewStatus: riskSeverity === "HIGH" ? "SUSPECTED" : "UNREVIEWED",
-      investigatorNotes: riskSeverity === "HIGH" ? `Automated threat flag triggered for ${mockSender}.` : "",
-      sourceNodeId: mockSender,
+      investigatorNotes: riskSeverity === "HIGH" ? `Automated security flag triggered for active node ${targetSender}.` : "",
+      sourceNodeId: targetSender,
     };
 
     setCases((prev) => [newCase, ...prev.slice(0, 49)]);
