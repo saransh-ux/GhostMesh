@@ -87,8 +87,8 @@ export default function SecurityCasesPage() {
       console.log("[Cases Queue] Real-time mesh packet ingested:", payload);
 
       const senderId = payload.senderId || payload.msgSender || payload.nodeId || "GATEWAY-01";
-      const rawText = payload.plainTextPreview || payload.plainText || payload.text || "";
-      const encryptedPayload = payload.encryptedPayload || payload.cipherText || `0x${Math.random().toString(16).slice(2)}`;
+      const rawText = payload.plainTextPreview || payload.plainText || payload.text || payload.message || "";
+      const encryptedPayload = payload.encryptedPayload || payload.cipherText || `0xSOS${Date.now().toString(16)}`;
 
       // Generate SHA-256 hash representation from payload
       const hashStr = `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join("")}`;
@@ -102,11 +102,22 @@ export default function SecurityCasesPage() {
         mediaType = "VIDEO";
       }
 
+      // Comprehensive SOS & Threat Check
+      const isSosThreat =
+        payload.isSos ||
+        payload.priority === "CRITICAL" ||
+        (payload.alertId && String(payload.alertId).includes("SOS")) ||
+        lowerText.includes("sos") ||
+        lowerText.includes("emergency") ||
+        lowerText.includes("attack") ||
+        lowerText.includes("breach") ||
+        lowerText.includes("distress") ||
+        lowerText.includes("help");
+
       // Risk Severity & Confidence Calculation
       let riskSeverity: RiskSeverity = "LOW";
       let confidenceScore = 0.40;
 
-      const isSosThreat = payload.isSos || lowerText.includes("sos") || lowerText.includes("emergency") || lowerText.includes("attack") || lowerText.includes("breach");
       const isHighEntropyRawStream = !rawText && encryptedPayload.length > 80;
 
       if (isSosThreat) {
@@ -132,11 +143,11 @@ export default function SecurityCasesPage() {
         confidenceScore: parseFloat(confidenceScore.toFixed(3)),
         mediaType,
         mediaHash: hashStr,
-        systemExplanation: riskSeverity === "HIGH" 
-          ? `CRITICAL THREAT: Emergency alert/anomaly payload transmitted from phone ${senderId}: ${displayText}.` 
+        systemExplanation: isSosThreat 
+          ? `CRITICAL THREAT: Emergency SOS Distress Beacon received from phone ${senderId}: ${displayText}.` 
           : `Standard mesh telemetry packet transmitted from phone ${senderId}: ${displayText}. Verified E2E payload.`,
-        reviewStatus: riskSeverity === "HIGH" ? "SUSPECTED" : "UNREVIEWED",
-        investigatorNotes: riskSeverity === "HIGH" ? `Automated security flag triggered for node ${senderId}.` : "",
+        reviewStatus: isSosThreat ? "SUSPECTED" : "UNREVIEWED",
+        investigatorNotes: isSosThreat ? `Automated emergency security flag triggered for node ${senderId}.` : "",
         sourceNodeId: senderId,
       };
 
