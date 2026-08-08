@@ -23,16 +23,20 @@ interface LiveTopologyMapProps {
 export default function LiveTopologyMap({ nodes, activePacketCount, lastPacketSender }: LiveTopologyMapProps) {
   const [selectedNode, setSelectedNode] = useState<MeshNode | null>(null);
 
-  // Position nodes radially around the central gateway
-  const center = { x: 320, y: 220 };
-  const radius = 150;
+  // Position nodes radially around the central gateway (Responsive 800x480 SVG space)
+  const center = { x: 400, y: 240 };
+  const radius = 160;
 
   const nodePositions = nodes.map((node, i) => {
     const angle = (i * 2 * Math.PI) / Math.max(nodes.length, 1) - Math.PI / 2;
+    const offsetX = radius * Math.cos(angle);
+    const offsetY = radius * Math.sin(angle);
     return {
       node,
-      x: center.x + radius * Math.cos(angle),
-      y: center.y + radius * Math.sin(angle),
+      x: center.x + offsetX,
+      y: center.y + offsetY,
+      offsetX,
+      offsetY,
       angle
     };
   });
@@ -65,7 +69,7 @@ export default function LiveTopologyMap({ nodes, activePacketCount, lastPacketSe
       </div>
 
       {/* SVG Canvas Map */}
-      <div className="relative w-full h-[420px] bg-slate-950/80 rounded-2xl border border-slate-800/80 overflow-hidden flex items-center justify-center">
+      <div className="relative w-full h-[480px] bg-slate-950/80 rounded-2xl border border-slate-800/80 overflow-hidden flex items-center justify-center">
         {/* Background Grid Pattern */}
         <svg className="absolute inset-0 w-full h-full opacity-15" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -77,7 +81,7 @@ export default function LiveTopologyMap({ nodes, activePacketCount, lastPacketSe
         </svg>
 
         {/* SVG Signal Connection Lines */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none">
+        <svg viewBox="0 0 800 480" className="absolute inset-0 w-full h-full pointer-events-none">
           {/* Concentric Signal Rings */}
           <circle cx={center.x} cy={center.y} r={radius} fill="none" stroke="#1e293b" strokeWidth="1.5" strokeDasharray="6 6" />
           <circle cx={center.x} cy={center.y} r={radius * 0.5} fill="none" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
@@ -98,7 +102,7 @@ export default function LiveTopologyMap({ nodes, activePacketCount, lastPacketSe
                   className="transition-all duration-300"
                 />
                 {isBroadcasting && (
-                  <circle cx={(center.x + x) / 2} cy={(center.y + y) / 2} r="4" fill="#38bdf8" className="animate-ping" />
+                  <circle cx={(center.x + x) / 2} cy={(center.y + y) / 2} r="5" fill="#38bdf8" className="animate-ping" />
                 )}
               </g>
             );
@@ -107,10 +111,10 @@ export default function LiveTopologyMap({ nodes, activePacketCount, lastPacketSe
 
         {/* Central Gateway Node */}
         <div
-          style={{ left: `${center.x - 45}px`, top: `${center.y - 45}px` }}
-          className="absolute w-24 h-24 rounded-full bg-blue-950/80 border-2 border-blue-500 shadow-2xl shadow-blue-500/30 flex flex-col items-center justify-center text-center z-20 backdrop-blur-md cursor-pointer"
+          style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}
+          className="absolute w-24 h-24 rounded-full bg-blue-950/90 border-2 border-blue-500 shadow-2xl shadow-blue-500/40 flex flex-col items-center justify-center text-center z-20 backdrop-blur-md cursor-pointer hover:scale-105 transition-transform"
         >
-          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center mb-1">
+          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center mb-1 shadow-md shadow-blue-600/50">
             <Monitor className="w-4 h-4 text-white" />
           </div>
           <span className="text-[10px] font-mono font-bold text-white leading-none">GATEWAY-01</span>
@@ -125,11 +129,11 @@ export default function LiveTopologyMap({ nodes, activePacketCount, lastPacketSe
             </div>
             <h4 className="text-sm font-bold text-slate-300">Waiting for Physical Mobile Node...</h4>
             <p className="text-xs text-slate-500 max-w-sm mt-1 font-mono">
-              Open <code className="text-blue-400 bg-slate-900 px-1.5 py-0.5 rounded">/mobile</code> on your phone or open another browser tab to automatically register a live mesh node.
+              Open <code className="text-blue-400 bg-slate-900 px-1.5 py-0.5 rounded">/mobile</code> on your phone or scan the QR code above to automatically register a live mesh node.
             </p>
           </div>
         ) : (
-          nodePositions.map(({ node, x, y }) => {
+          nodePositions.map(({ node, offsetX, offsetY }) => {
             const isSelected = selectedNode?.nodeId === node.nodeId;
             const isBroadcasting = lastPacketSender === node.nodeId;
 
@@ -137,13 +141,17 @@ export default function LiveTopologyMap({ nodes, activePacketCount, lastPacketSe
               <div
                 key={node.nodeId}
                 onClick={() => setSelectedNode(node)}
-                style={{ left: `${x - 36}px`, top: `${y - 36}px` }}
-                className={`absolute w-18 h-18 p-2 rounded-2xl border flex flex-col items-center justify-center cursor-pointer transition-all duration-300 z-30 hover:scale-110 shadow-lg ${
+                style={{
+                  left: `calc(50% + ${offsetX}px)`,
+                  top: `calc(50% + ${offsetY}px)`,
+                  transform: "translate(-50%, -50%)"
+                }}
+                className={`absolute w-20 h-20 p-2 rounded-2xl border flex flex-col items-center justify-center cursor-pointer transition-all duration-300 z-30 hover:scale-110 shadow-xl ${
                   isBroadcasting
-                    ? "bg-cyan-950/90 border-cyan-400 shadow-cyan-500/40 ring-4 ring-cyan-500/20"
+                    ? "bg-cyan-950/95 border-cyan-400 shadow-cyan-500/50 ring-4 ring-cyan-500/30"
                     : isSelected
-                    ? "bg-blue-950/90 border-blue-400 shadow-blue-500/40"
-                    : "bg-slate-900/90 border-slate-700 hover:border-slate-500"
+                    ? "bg-blue-950/95 border-blue-400 shadow-blue-500/50"
+                    : "bg-slate-900/95 border-slate-700 hover:border-slate-500"
                 }`}
               >
                 <div className="relative mb-1">

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import Navbar from "@/components/Navbar";
 import LiveTopologyMap, { MeshNode } from "@/components/LiveTopologyMap";
-import EvervaultTerminal, { MeshPacket } from "@/components/EvervaultTerminal";
+import { MeshPacket } from "@/app/page";
 import SosBanner, { SosAlertData } from "@/components/SosBanner";
 import { 
   Smartphone, 
@@ -300,15 +300,9 @@ const newSocket = io(serverUrl, {
           </div>
         </section>
 
-        {/* Live Topology Map & Evervault Terminal Grid */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-6">
-            <LiveTopologyMap nodes={nodes} activePacketCount={packets.length} />
-          </div>
-
-          <div className="lg:col-span-6">
-            <EvervaultTerminal packets={packets} />
-          </div>
+        {/* Live Topology Map */}
+        <section className="w-full">
+          <LiveTopologyMap nodes={nodes} activePacketCount={packets.length} />
         </section>
       </main>
     </div>

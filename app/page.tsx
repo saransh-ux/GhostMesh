@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { io, Socket } from "socket.io-client";
 import Navbar from "@/components/Navbar";
 import LiveTopologyMap, { MeshNode } from "@/components/LiveTopologyMap";
-import EvervaultTerminal, { MeshPacket } from "@/components/EvervaultTerminal";
 import SosBanner, { SosAlertData } from "@/components/SosBanner";
 import HeroLanding from "@/components/HeroLanding";
 import { QRCodeSVG } from "qrcode.react";
@@ -22,8 +21,21 @@ import {
   Send,
   Zap,
   CheckCircle2,
-  QrCode
+  QrCode,
+  Key
 } from "lucide-react";
+
+export interface MeshPacket {
+  packetId: string;
+  senderId: string;
+  encryptedPayload: string;
+  plainTextPreview: string;
+  timestamp: string;
+  hops: number;
+  ttl: number;
+  route: string[];
+  signalStrength?: string;
+}
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"dashboard" | "landing" | "tech" | "security">("landing");
@@ -159,7 +171,7 @@ export default function Home() {
         )}
 
         {activeTab === "dashboard" && (
-          <div className="max-w-container-max mx-auto px-6 pt-8 space-y-8 animate-fadeIn">
+          <div className="max-w-5xl mx-auto px-6 pt-8 space-y-8 animate-fadeIn">
             {/* Command Center Status Banner */}
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
@@ -168,43 +180,31 @@ export default function Home() {
                 </div>
                 <div>
                   <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                    Live Hackathon Pitch Mode: Mesh Relay Command Center
+                    Mesh Relay Command Center
                     <span className="text-xs font-mono bg-emerald-500/20 text-emerald-400 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
                       ACTIVE SOCKET RELAY
                     </span>
                   </h1>
                   <p className="text-xs font-mono text-slate-400 mt-1">
-                    Connect your physical mobile phone to transmit live encrypted payloads directly onto this desktop dashboard.
+                    Connect physical mobile phone nodes to transmit live encrypted payloads across the mesh topology matrix.
                   </p>
                 </div>
               </div>
 
-              {/* Action Buttons & Dynamic QR Code Target */}
-              <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
-                <div className="flex items-center gap-3 bg-slate-800/90 border border-slate-700 p-2.5 rounded-2xl shrink-0">
-                  <div className="bg-white p-1.5 rounded-xl shadow-inner">
-                    <QRCodeSVG value={mobileUrl} size={64} />
-                  </div>
-                  <div className="space-y-0.5 text-left">
-                    <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase flex items-center gap-1">
-                      <QrCode className="w-3 h-3 text-emerald-400" />
-                      Scan to Pair Phone Node
-                    </span>
-                    <p className="text-[10px] font-mono text-slate-300 truncate max-w-[180px]">
-                      {mobileUrl}
-                    </p>
-                  </div>
+              {/* Dynamic QR Code Pairing Card */}
+              <div className="flex items-center gap-3 bg-slate-800/90 border border-slate-700 p-2.5 rounded-2xl shrink-0">
+                <div className="bg-white p-1.5 rounded-xl shadow-inner">
+                  <QRCodeSVG value={mobileUrl} size={64} />
                 </div>
-
-                <a
-                  href="/mobile"
-                  target="_blank"
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-4 py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 active:scale-95 transition-all w-full md:w-auto shrink-0"
-                >
-                  <Smartphone className="w-4 h-4" />
-                  <span>Launch Phone Client (/mobile)</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
+                <div className="space-y-0.5 text-left">
+                  <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase flex items-center gap-1">
+                    <QrCode className="w-3 h-3 text-emerald-400" />
+                    Scan to Pair Phone Node
+                  </span>
+                  <p className="text-[10px] font-mono text-slate-300 truncate max-w-[180px]">
+                    {mobileUrl}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -232,19 +232,13 @@ export default function Home() {
               </form>
             </div>
 
-            {/* Grid Layout: Left Topology Map, Right Evervault Terminal */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              <div className="lg:col-span-6">
-                <LiveTopologyMap
-                  nodes={nodes}
-                  activePacketCount={packets.length}
-                  lastPacketSender={lastSender}
-                />
-              </div>
-
-              <div className="lg:col-span-6">
-                <EvervaultTerminal packets={packets} />
-              </div>
+            {/* Centered Mesh Topology Visualizer */}
+            <div className="w-full">
+              <LiveTopologyMap
+                nodes={nodes}
+                activePacketCount={packets.length}
+                lastPacketSender={lastSender}
+              />
             </div>
           </div>
         )}
@@ -285,14 +279,26 @@ export default function Home() {
         {activeTab === "security" && (
           <div className="max-w-container-max mx-auto px-6 pt-12 space-y-8">
             <div className="text-center max-w-3xl mx-auto space-y-4">
-              <h1 className="text-4xl font-bold text-slate-900">Cryptographic Security Inspection</h1>
+              <h1 className="text-4xl font-bold text-slate-900">Cryptographic Zero-Knowledge Security</h1>
               <p className="text-slate-600 text-base">
-                Zero-trust protocol verification with real-time Evervault packet stream analysis.
+                Zero-trust protocol verification with Ed25519 keypair identity and AES-256-GCM payload encryption.
               </p>
             </div>
 
-            <div className="max-w-4xl mx-auto">
-              <EvervaultTerminal packets={packets} />
+            <div className="max-w-4xl mx-auto bg-white border border-slate-200 rounded-3xl p-8 space-y-6 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                  <Key className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">Zero-Knowledge Identity Verification</h3>
+                  <p className="text-xs text-slate-500 font-mono">WebCrypto SubtleCrypto ECDSA / Ed25519 Architecture</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-slate-600 leading-relaxed">
+                GhostMesh uses Zero-Knowledge (ZK) key generation to create persistent cryptographic node identities (`NODE-XXXXXX`) without sending seed phrases, private keys, or passwords across the network. Nodes prove ownership of their public key via cryptographic signatures.
+              </p>
             </div>
           </div>
         )}
