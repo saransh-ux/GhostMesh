@@ -469,14 +469,20 @@ export default function MobileControllerPage() {
     // 2. Transmit via Socket.io relay
     if (socketRef.current && socketRef.current.connected) {
       const isBroadcast = selectedTarget === "ALL";
+      const isSosKeyword = /sos|emergency|help|distress|attack|breach/i.test(message);
+
       const socketPayload = {
         id: msgId,
         packetId: msgId,
         senderId: nodeId,
         targetNodeId: selectedTarget,
         encryptedPayload: hexPayload,
-        plainTextPreview: isBroadcast ? message : `[E2E Encrypted Payload: ${hexPayload.substring(0, 16)}...]`,
+        plainTextPreview: isBroadcast || isSosKeyword ? message : `[E2E Encrypted Payload: ${hexPayload.substring(0, 16)}...]`,
         plainText: message,
+        text: message,
+        message: message,
+        isSos: isSosKeyword,
+        priority: isSosKeyword ? "CRITICAL" : "NORMAL",
         timestamp: newMsg.timestamp,
         hops: 1,
         ttl: 16,

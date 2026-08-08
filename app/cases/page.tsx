@@ -89,7 +89,7 @@ export default function SecurityCasesPage() {
       console.log("[Cases Queue] Real-time mesh packet ingested:", payload);
 
       const senderId = payload.senderId || payload.msgSender || payload.nodeId || "GATEWAY-01";
-      const rawText = payload.plainTextPreview || payload.plainText || payload.text || payload.message || "";
+      const rawText = payload.plainText || payload.message || payload.text || payload.plainTextPreview || "";
       const packetId = payload.id || payload.packetId || payload.alertId || `${senderId}-${rawText.slice(0, 15)}`;
 
       // Deduplication: Ignore if this exact packet was already ingested in the last 10 seconds
