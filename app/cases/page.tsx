@@ -112,9 +112,9 @@ export default function SecurityCasesPage() {
         confidenceScore: parseFloat(confidenceScore.toFixed(3)),
         mediaType,
         mediaHash: hashStr,
-        systemExplanation: `Real-time payload packet received from physical node ${senderId}. Encrypted stream (${encryptedPayload.slice(0, 16)}...) analyzed by live neural threat inspector.`,
+        systemExplanation: `Live message packet transmitted from phone ${senderId}: "${rawText || `Encrypted Payload Stream ${encryptedPayload.slice(0, 20)}...`}". Flagged for automated threat analysis.`,
         reviewStatus: riskSeverity === "HIGH" ? "SUSPECTED" : "UNREVIEWED",
-        investigatorNotes: riskSeverity === "HIGH" ? `Automated flag triggered for high-entropy payload from ${senderId}.` : "",
+        investigatorNotes: riskSeverity === "HIGH" ? `Automated security flag triggered for node ${senderId}.` : "",
         sourceNodeId: senderId,
       };
 
