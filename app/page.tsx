@@ -70,6 +70,11 @@ export default function Home() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const searchParams = new URLSearchParams(window.location.search);
+      const queryTab = searchParams.get("tab") as "dashboard" | "landing" | "tech" | "security" | null;
+      if (queryTab && ["dashboard", "landing", "tech", "security"].includes(queryTab)) {
+        setActiveTab(queryTab);
+      }
+
       const queryNodeId = searchParams.get("nodeId");
       const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       const isCapacitor =

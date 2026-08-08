@@ -338,10 +338,10 @@ ${item.systemExplanation}
             </button>
 
             <Link
-              href="/"
+              href="/?tab=dashboard"
               className="bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-800 flex items-center gap-2 transition-all shrink-0"
             >
-              <span>Return to Dashboard</span>
+              <span>Return to Live Command Center</span>
               <ChevronRight className="w-4 h-4 text-slate-400" />
             </Link>
           </div>
