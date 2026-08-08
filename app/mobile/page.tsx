@@ -166,59 +166,40 @@ export default function MobileControllerPage() {
       newSocket.on("MESH_NODES_UPDATED", handleNodesUpdate);
       newSocket.on("nodes_updated", handleNodesUpdate);
 
-      newSocket.on("chat_message", (msgData: any) => {
-        if (msgData && (msgData.plainText || msgData.plainTextPreview)) {
-          setChatMessages((prev) => {
-            if (prev.some((m) => m.id === (msgData.id || msgData.packetId))) return prev;
-            return [...prev, {
-              id: msgData.id || msgData.packetId || `MSG-${Date.now()}`,
-              senderId: msgData.senderId || "Peer Node",
-              targetNodeId: msgData.targetNodeId || "ALL",
-              plainText: msgData.plainText || msgData.plainTextPreview,
-              encryptedPayload: msgData.encryptedPayload || "0x00",
-              timestamp: msgData.timestamp || new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-              isSelf: false
-            }];
-          });
-        }
-      });
+      const handleIncomingMessage = (msgData: any) => {
+        if (!msgData) return;
+        const msgTarget = msgData.targetNodeId || "ALL";
+        const msgSender = msgData.senderId || "Peer Node";
+        const activeId = currentId;
 
-      newSocket.on("broadcast_payload", (msgData: any) => {
-        if (msgData && (msgData.plainText || msgData.plainTextPreview)) {
-          setChatMessages((prev) => {
-            if (prev.some((m) => m.id === (msgData.id || msgData.packetId))) return prev;
-            return [...prev, {
-              id: msgData.id || msgData.packetId || `MSG-${Date.now()}`,
-              senderId: msgData.senderId || "Peer Node",
-              targetNodeId: msgData.targetNodeId || "ALL",
-              plainText: msgData.plainText || msgData.plainTextPreview,
-              encryptedPayload: msgData.encryptedPayload || "0x00",
-              timestamp: msgData.timestamp || new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-              isSelf: false
-            }];
-          });
+        // Enforce strict Targeted Node Filtering:
+        // Accept packet ONLY IF: Broadcast ("ALL"), or targeted to activeId, or sent by activeId
+        if (msgTarget !== "ALL" && msgTarget !== activeId && msgSender !== activeId) {
+          console.log(`[Targeted Filter] Node ${activeId} ignoring targeted packet meant for ${msgTarget}`);
+          return;
         }
-      });
 
-      newSocket.on("RECEIVE_MESH_PACKET", (pkt: any) => {
-        if (pkt.targetNodeId === "ALL" || pkt.targetNodeId === activeNodeId || pkt.senderId === activeNodeId) {
-          const isSelf = pkt.senderId === activeNodeId;
-          const newMsg: ChatMessage = {
-            id: pkt.packetId || Math.random().toString(),
-            senderId: pkt.senderId,
-            targetNodeId: pkt.targetNodeId || "ALL",
-            plainText: pkt.plainTextPreview,
-            encryptedPayload: pkt.encryptedPayload,
-            timestamp: pkt.timestamp || new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-            isSelf,
-          };
+        const packetId = msgData.id || msgData.packetId || `MSG-${Date.now()}`;
+        const isSelf = msgSender === activeId;
+        const displayMsg = msgData.plainText || msgData.plainTextPreview || `[E2E Encrypted Payload: ${(msgData.encryptedPayload || "0x00").substring(0, 16)}...]`;
 
-          setChatMessages((prev) => {
-            if (prev.some((m) => m.id === newMsg.id)) return prev;
-            return [...prev, newMsg];
-          });
-        }
-      });
+        setChatMessages((prev) => {
+          if (prev.some((m) => m.id === packetId)) return prev;
+          return [...prev, {
+            id: packetId,
+            senderId: msgSender,
+            targetNodeId: msgTarget,
+            plainText: displayMsg,
+            encryptedPayload: msgData.encryptedPayload || "0x00",
+            timestamp: msgData.timestamp || new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            isSelf
+          }];
+        });
+      };
+
+      newSocket.on("chat_message", handleIncomingMessage);
+      newSocket.on("broadcast_payload", handleIncomingMessage);
+      newSocket.on("RECEIVE_MESH_PACKET", handleIncomingMessage);
 
     } catch (e) {
       console.warn("[GhostMesh WebSocket Error]:", e);
@@ -288,18 +269,23 @@ export default function MobileControllerPage() {
       // 1. Subscribe to incoming GATT characteristic write messages from native Java
       GhostMeshBLE.addListener("onMessageReceived", (incomingMsg: any) => {
         console.log("[GhostMesh Native BLE Rx]:", incomingMsg);
+        const msgTarget = incomingMsg.targetNodeId || "ALL";
+        const msgSender = incomingMsg.senderId || "BLE-PEER";
+        if (msgTarget !== "ALL" && msgTarget !== activeNodeId && msgSender !== activeNodeId) {
+          return;
+        }
         setChatMessages((prev) => {
           if (prev.some((m) => m.id === incomingMsg.id)) return prev;
           return [
             ...prev,
             {
               id: incomingMsg.id || `BLE-${Date.now()}`,
-              senderId: incomingMsg.senderId || "BLE-PEER",
-              targetNodeId: incomingMsg.targetNodeId || "ALL",
+              senderId: msgSender,
+              targetNodeId: msgTarget,
               plainText: incomingMsg.plainText || incomingMsg.rawMessage,
               encryptedPayload: incomingMsg.encryptedPayload || "0x00",
               timestamp: incomingMsg.timestamp || new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-              isSelf: false,
+              isSelf: msgSender === activeNodeId,
             },
           ];
         });
@@ -481,14 +467,15 @@ export default function MobileControllerPage() {
 
     // 2. Transmit via Socket.io relay
     if (socketRef.current && socketRef.current.connected) {
+      const isBroadcast = selectedTarget === "ALL";
       const socketPayload = {
         id: msgId,
         packetId: msgId,
         senderId: nodeId,
         targetNodeId: selectedTarget,
         encryptedPayload: hexPayload,
-        plainTextPreview: message,
-        plainText: message,
+        plainTextPreview: isBroadcast ? message : `[E2E Encrypted Payload: ${hexPayload.substring(0, 16)}...]`,
+        plainText: isBroadcast ? message : `[E2E Encrypted Payload: ${hexPayload.substring(0, 16)}...]`,
         timestamp: newMsg.timestamp,
         hops: 1,
         ttl: 16,
